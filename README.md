@@ -19,12 +19,12 @@ and in the second object file **foo** will be **foo__dmtcp_2**, etc until n.
 
 #### --singlestr and --keepnumstr
 Use if you want to change defaults of the string appended:
-| Long Flags         | String Appended to Symbol  |
-| ------------------ |:--------------------------:|
-| no --singlestr     | <symbol>\_\_dmtcp\_plt        |
-| --singlestr=<str>  | <symbol><str>              |
-| no --keepnumstr    | <symbol>\_\_dmtcp\_*          |
-| --keepnumstr=<str> | <symbol><str>*             |
+| Long Flags | String Appended to Symbol  |
+| -- | -- |
+| no --singlestr | <symbol>\_\_dmtcp\_plt |
+| --singlestr=<str> | <symbol><str> |
+| no --keepnumstr | <symbol>\_\_dmtcp\_* |
+| --keepnumstr=<str> | <symbol><str>* |
 
 **The \* in the table is [0-9]+**
 
@@ -48,12 +48,12 @@ if given n number of object files and the given symbol **foo**, the first object
 ___
 #### --singlestr and --keepnumstr
 Use if you want to change defaults of the string appended:
-| Long Flags           | String Appended to Symbol  |
-| -------------------- |:--------------------------:|
-| no \-\-singlestr     | <symbol>\_\_dmtcp\_plt     |
-| \-\-singlestr=<str>  | <symbol><str>              |
-| no \-\-keepnumstr    | <symbol>\_\_dmtcp\_*       |
-| \-\-keepnumstr=<str> | <symbol><str>*             |
+| Long Flags | String Appended to Symbol |
+| -- | -- |
+| no \-\-singlestr | <symbol>\_\_dmtcp\_plt |
+| \-\-singlestr=<str> | <symbol><str> |
+| no \-\-keepnumstr | <symbol>\_\_dmtcp\_* |
+| \-\-keepnumstr=<str> | <symbol><str>* |
 
 _The \* in the table is [0-9]+_
 ___
