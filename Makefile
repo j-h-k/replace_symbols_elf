@@ -26,11 +26,11 @@ run:
 #	readelf -h ${test}.o
 #	readelf -S ${test}.o
 #	readelf -s ${test}.o
-#
-	#same as --keepnumsymbol=foo_wrap 
-	./${csn} -o ${wf}1.o ${wf}2.o ${wf}3.o -k foo_wrap 
-	#same as --singlesymbol=foo
-	./${csn} -o ${test}.o -s foo 
+	#same as --keepnumsymbol=foo_wrap
+	./${csn} -o ${wf}1.o ${wf}2.o ${wf}3.o -k foo_wrap --keepnumstr=__dmtcp_
+	#same as 
+	#	./program -o <obj file> --singlesymbol=foo
+	./${csn} -o ${test}.o -s foo --singlestr=__dmtcp_plt
 
 #	readelf -h ${test}.o
 #	readelf -S ${test}.o
@@ -38,7 +38,9 @@ run:
 
 test:
 	gcc -c DMTCP.c
+	# static executable
 	gcc -static DMTCP.o ${wf}1.o ${wf}2.o ${wf}3.o ${test}.o
+	# dynamic executable
 	gcc DMTCP.o ${wf}1.o ${wf}2.o ${wf}3.o ${test}.o -o dyn_a.out
 
 check: test
