@@ -17,13 +17,13 @@ if given only one object file and the given symbol is **foo** will change the sy
 if given n number of object files and the given symbol **foo**, the first object file on the arguments will be **foo__dmtcp_1**,and in the second object file **foo** will be **foo__dmtcp_2**, etc until n.
 ___
 #### --singlestr and --keepnumstr
-Use if you want to change defaults of the string appended:
-| Long Flags   | String Appended to Symbol |
-| :--------------: | :---: |
-| no \-\-singlestr | <symbol>\_\_dmtcp\_plt |
-| \-\-singlestr=\<str\> | \<symbol\>\<str\> |
-| no \-\-keepnumstr  | \<symbol\>\_\_dmtcp\_* |
-| \-\-keepnumstr=\<str\> | \<symbol\>\<str\>* |
+Use if you want to change defaults of the string appended:  
+Long Flags | String Appended to Symbol  
+---------- | -------------------------  
+no \-\-singlestr | <symbol>\_\_dmtcp\_plt  
+\-\-singlestr=\<str\> | \<symbol\>\<str\>  
+no \-\-keepnumstr  | \<symbol\>\_\_dmtcp\_*  
+\-\-keepnumstr=\<str\> | \<symbol\>\<str\>*  
 
 _The \* in the table is [0-9]+_
 ___
