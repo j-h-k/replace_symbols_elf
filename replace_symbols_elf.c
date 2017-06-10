@@ -46,7 +46,8 @@ int wrtieOutSectionHeaderTable();
 // Helper functions
 int runGetOpt(int argc, char **argv, int *objIndex, char **objList,
               int *singleSymbolIndex, char **singleSymbolList,
-              int *keepNumSymbolIndex, char **keepNumSymbolList)
+              int *keepNumSymbolIndex, char **keepNumSymbolList,
+              char **singleStrPtr, char **keepNumStrPtr)
 {
   int c;
   int digit_optind = 0;
@@ -56,7 +57,9 @@ int runGetOpt(int argc, char **argv, int *objIndex, char **objList,
     static struct option long_options[] = {
       {"object", required_argument, 0, 0},
       {"singlesymbol", required_argument, 0, 1},
-      {"keepnumsymbol", required_argument, 0, 2}
+      {"keepnumsymbol", required_argument, 0, 2},
+      {"singlestr", required_argument, 0, 3},
+      {"keepnumstr", required_argument, 0, 4}
     };
     
     c = getopt_long(argc, argv, "o:s:k:", long_options, &option_index);
@@ -93,8 +96,7 @@ int runGetOpt(int argc, char **argv, int *objIndex, char **objList,
     case 2: //multiple symbol requiring numbering
       if (objIndex ==0) {
         printf("***If need to assign numbering to symbol, list object files first!\n");
-        perror("Syntax: ./replace-symbols-name -o [obj files] -s [single symbols] --keepnumsymbol=[symbol]");
-        printf("");
+        perror("Syntax: ./replace-symbols-name -o <obj file> [obj files] --keepnumsymbol=<symbol>");
         exit(1);
       }
       keepNumSymbolList[(*keepNumSymbolIndex)++] = strdup(optarg);
@@ -102,8 +104,7 @@ int runGetOpt(int argc, char **argv, int *objIndex, char **objList,
     case 'k':
       if (objIndex ==0) {
         printf("***If need to assign numbering to symbol, list object files first!\n");
-        perror("Syntax: ./replace-symbols-name -o [obj files] -s [single symbols] --keepnumsymbol=[symbol]");
-        printf("");
+        perror("Syntax: ./replace-symbols-name -o <obj file> [obj files] --keepnumsymbol=<symbol>");
         exit(1);
       }
       optind--;
@@ -111,6 +112,23 @@ int runGetOpt(int argc, char **argv, int *objIndex, char **objList,
         keepNumSymbolList[(*keepNumSymbolIndex)++] = strdup(argv[optind]);
         optind++;
       } while (optind < argc && *argv[optind] != '-');
+      break;
+
+    case 3:
+      if (*singleStrPtr) {
+        free(*singleStrPtr);
+        printf("***Only use the flag --singestr=<symbol> once.\n");
+        exit(1);
+      }
+      *singleStrPtr = strdup(optarg);
+      break;
+    case 4:
+      if (*keepNumStrPtr) {
+        free(*keepNumStrPtr);
+        printf("***Only use the flag --keepnumstr=<symbol> once.\n");
+        exit(1);
+      }
+      *keepNumStrPtr = strdup(optarg);
       break;
 
     default:
@@ -136,7 +154,7 @@ void printObjectFileNames(int count, char* list[])
     printf("(%d)\t%s\n", i, list[i]);
 }
 
-void printSymbolsToChange(int count, char *list[], int isSingle)
+void printSymbolsToChange(int count, char *list[], char *strToAppend, int isSingle)
 {
   printf("\n%s\n", isSingle ? 
                   "Single Symbols planned on changing:" : 
@@ -146,10 +164,17 @@ void printSymbolsToChange(int count, char *list[], int isSingle)
     strcat(str, list[i]);
     strcat(str, " --> ");
     strcat(str, list[i]);
-    if (isSingle)
-      strcat(str, "__dmtcp_plt");
-    else
-      strcat(str, "__dmtcp_*");
+    if (strToAppend) {
+      if (isSingle) strcat(str, strToAppend);
+      else {
+        strcat(str, strToAppend);
+        strcat(str, "*");
+      }
+    }
+    else {
+      if (isSingle) strcat(str, "__dmtcp_plt");
+      else strcat(str, "__dmtcp_*");
+    }
     printf("(%d)\t%s\n", i, str);
   }
 }
@@ -164,7 +189,7 @@ int checkAndFindElfFile(char *objFileName, Elf64_Ehdr* ehdr)
       printf("Not an ELF executable\n");
       return -1;
    }
-  printf("\n");
+//  printf("\n");
   switch(ehdr->e_type) {
   case ET_EXEC:
      printf("WARNING: The ELf type is that of an executable. (%s)\n", objFileName);
@@ -211,6 +236,7 @@ int loopSymbolTableForSymbol(int index, char **list,
                                     Elf64_Sym *symtab_ent, unsigned int symtab_size,
                                     char *strtab_ent, int isSingle)
 {
+	if (!index) return 0;
   Elf64_Sym * sym = NULL;
 
   printf("\t%s\n", isSingle ? "Single Symbols" : "Keep Number Symbols");
@@ -265,16 +291,22 @@ int checkIfSymbolsExist(char *objFileName, int singleSymbolIndex, char **singleS
   return 0;
 }
 
-int calculateBytesNeeded(int index, char **list, int isSingle)
+int calculateBytesNeeded(int index, char **list, char *strToAppend, int isSingle)
 {
   int numberOfSymbols = index;
-  char str[100] ={0};
-  sprintf(str, "%d", index);
+  char strNum[100] ={0};
+  sprintf(strNum, "%d", index);
   int result = 0;
 
-  for (int i = 0; i < numberOfSymbols; ++i)
-    result += strlen(list[i]) + strlen("__dmtcp") 
-              + (isSingle ? strlen("_plt") + 1 : strlen("_") + strlen(str) + 1);
+  for (int i = 0; i < numberOfSymbols; ++i) {
+    result += strlen(list[i]);
+    if (strToAppend)
+      result += (isSingle ? strlen(strToAppend) : strlen(strNum)) + 1;
+    else {
+      result += strlen("__dmtcp") 
+                + (isSingle ? strlen("_plt") + 1 : strlen("_") + strlen(strNum) + 1);
+    }
+  }
 
   // align on 64 bytes..
   result = (result + 63) & -64; 
@@ -326,7 +358,7 @@ int extendAndFixAfterStrtab(char *objFileName, Elf64_Ehdr *ehdr, Elf64_Shdr **sh
 
 int addSymbolsAndUpdateSymtab(char *objFileName, int num, int index, char **list,
                               Elf64_Shdr *symtab, Elf64_Shdr *strtab,
-                              unsigned long *prev_strtab_size, int isSingle)
+                              unsigned long *prev_strtab_size, char *strToAppend, int isSingle)
 {
   if (!index) return 0;
   // From previous function checkIfSymbolsExist(), we know all the symbols exist
@@ -351,8 +383,11 @@ int addSymbolsAndUpdateSymtab(char *objFileName, int num, int index, char **list
         char *symtab_symbol = strtab_buf + sym->st_name;
 
         if (strcmp(symtab_symbol, list[i]) == 0) {
-          char newString[strlen(list[i]) + strlen("__dmtcp") 
-                        + (isSingle ? strlen("_plt") + 1 : strlen("_") + strlen(str) + 1)];
+          char newString[strlen(list[i]) + (strToAppend ? strlen(strToAppend) : strlen("__dmtcp"))
+                        + (strToAppend ?
+                            (isSingle ? 1 : strlen(str) + 1) :
+                            (isSingle ? strlen("_plt") + 1 : strlen("_") + strlen(str) + 1))
+                        ];
           memset(newString, 0, sizeof(newString));
 
           sym->st_name = *prev_strtab_size;
@@ -361,13 +396,19 @@ int addSymbolsAndUpdateSymtab(char *objFileName, int num, int index, char **list
           //sym->st_info = ELF64_ST_INFO(STB_WEAK, STT_NOTYPE);
 
           strcat(newString, list[i]);
-          
-          strcat(newString, "__dmtcp");
-          if (isSingle)
-            strcat(newString, "_plt");
-          else {
-            strcat(newString, "_");
-            strcat(newString, str);
+         
+          if (strToAppend) {
+            strcat(newString, strToAppend);
+						if (!isSingle) strcat(newString, str);
+          }
+          else { 
+            strcat(newString, "__dmtcp");
+            if (isSingle)
+              strcat(newString, "_plt");
+            else {
+              strcat(newString, "_");
+              strcat(newString, str);
+            }
           }
           strcat(newString, "\0");
           strncpy((char *) strtab_buf + *prev_strtab_size, newString, sizeof(newString));
@@ -379,7 +420,7 @@ int addSymbolsAndUpdateSymtab(char *objFileName, int num, int index, char **list
       }
     }
     if (debug) printf("strtab->sh_size = %d : prev = %d\n", strtab->sh_size, *prev_strtab_size);
-    if (!found) {
+    if (!isSingle && !found) {
       printf("***Could not find: %s\n", list[i]);
       return -1;
     }
@@ -402,10 +443,12 @@ int main(int argc, char **argv)
   char** objList = malloc(100 * sizeof(char *));
 
   int singleSymbolIndex = 0;
-  char** singleSymbolList = malloc(100 * sizeof(char *));      // Symbols to add "__dmtcp_plt" to
+  char **singleSymbolList = malloc(100 * sizeof(char *));      // Symbols to add "__dmtcp_plt" to
+  char *singleStr = NULL;
 
   int keepNumSymbolIndex = 0;
-  char** keepNumSymbolList = malloc(100 * sizeof(char *));    // Symbols to add "__dmtcp_*" to, where * is 0 to n
+  char **keepNumSymbolList = malloc(100 * sizeof(char *));    // Symbols to add "__dmtcp_*" to, where * is 0 to n
+  char *keepNumStr = NULL;
   
   Elf64_Shdr * shdr = NULL;
   Elf64_Shdr * symtab = NULL;
@@ -423,7 +466,8 @@ int main(int argc, char **argv)
   // Parse the arguments!
   assert(runGetOpt(argc, argv, &objIndex, objList, 
                   &singleSymbolIndex, singleSymbolList,
-                  &keepNumSymbolIndex, keepNumSymbolList) != -1);
+                  &keepNumSymbolIndex, keepNumSymbolList,
+                  &singleStr, &keepNumStr) != -1);
 
   // Let user know which object files are going to change
   printObjectFileNames(objIndex, objList);
@@ -431,9 +475,9 @@ int main(int argc, char **argv)
   // Let user know which symbols are going to change
   assert(singleSymbolIndex + keepNumSymbolIndex > 0);
   if (singleSymbolIndex) 
-    printSymbolsToChange(singleSymbolIndex, singleSymbolList, 1);
+    printSymbolsToChange(singleSymbolIndex, singleSymbolList, singleStr, 1);
   if (keepNumSymbolIndex) 
-    printSymbolsToChange(keepNumSymbolIndex, keepNumSymbolList, 0);
+    printSymbolsToChange(keepNumSymbolIndex, keepNumSymbolList, keepNumStr, 0);
   printf("\n\n");
 
 
@@ -455,15 +499,15 @@ int main(int argc, char **argv)
 
     // Extend the string table and whatever follows after.. 
     // Fix Elf header and Section header Table
-    int add_space = calculateBytesNeeded(singleSymbolIndex, singleSymbolList, 1)
-                    + calculateBytesNeeded(keepNumSymbolIndex, keepNumSymbolList, 0);
+    int add_space = calculateBytesNeeded(singleSymbolIndex, singleSymbolList, singleStr, 1)
+                    + calculateBytesNeeded(keepNumSymbolIndex, keepNumSymbolList, keepNumStr, 0);
     assert(extendAndFixAfterStrtab(objList[i], &ehdr, &shdr, &symtab, &strtab, add_space) != -1);
 
     // Add dmtcp symbol name(s) and update symtab
     assert(addSymbolsAndUpdateSymtab(objList[i], i, singleSymbolIndex, singleSymbolList, 
-                                    symtab, strtab, &prev_strtab_size, 1) != -1);
+                                    symtab, strtab, &prev_strtab_size, singleStr, 1) != -1);
     assert(addSymbolsAndUpdateSymtab(objList[i], i, keepNumSymbolIndex, keepNumSymbolList, 
-                                    symtab, strtab, &prev_strtab_size, 0) != -1);
+                                    symtab, strtab, &prev_strtab_size, keepNumStr, 0) != -1);
 
     free(shdr);
   }
