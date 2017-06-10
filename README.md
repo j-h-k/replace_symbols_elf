@@ -18,9 +18,10 @@ if given n number of object files and the given symbol **foo**, the first object
 ___
 #### --singlestr and --keepnumstr
 Use if you want to change defaults of the string appended:  
+
 Long Flags | String Appended to Symbol  
 ---------- | -------------------------  
-no \-\-singlestr | <symbol>\_\_dmtcp\_plt  
+no \-\-singlestr | \<symbol\>\_\_dmtcp\_plt  
 \-\-singlestr=\<str\> | \<symbol\>\<str\>  
 no \-\-keepnumstr  | \<symbol\>\_\_dmtcp\_*  
 \-\-keepnumstr=\<str\> | \<symbol\>\<str\>*  
