@@ -220,9 +220,9 @@ int findSymtabAndStrtabAndShdr(char *objFileName, Elf64_Ehdr ehdr, Elf64_Shdr **
     switch (hdr->sh_type) {
     case SHT_SYMTAB:
       *symtab = hdr;
-      if (debug) printf("symtab: size=%d offset=%p\n", hdr->sh_size, hdr->sh_offset);
+      if (debug) printf("symtab: size=%lu offset=%p\n", hdr->sh_size, (void *)hdr->sh_offset);
       *strtab = *shdr + hdr->sh_link;
-      if (debug) printf("strtab: size=%d offset=%p\n", (*strtab)->sh_size, (*strtab)->sh_offset);
+      if (debug) printf("strtab: size=%lu offset=%p\n", (*strtab)->sh_size, (void *)(*strtab)->sh_offset);
       assert((*strtab)->sh_type == SHT_STRTAB);
       break;
     }
@@ -272,10 +272,10 @@ int checkIfSymbolsExist(char *objFileName, int singleSymbolIndex, char **singleS
   char *strtab_ent = NULL;
 
   symtab_ent = malloc(symtab->sh_size);
-  if (debug) printf("symtab: size=%d offset=%p\n", symtab->sh_size, symtab->sh_offset);
+  if (debug) printf("symtab: size=%lu offset=%p\n", symtab->sh_size, (void *)symtab->sh_offset);
   read_metadata(objFileName, (char *)symtab_ent, symtab->sh_size, symtab->sh_offset);
   strtab_ent = malloc(strtab->sh_size);
-  if (debug) printf("strtab: size=%d offset=%p\n", strtab->sh_size, strtab->sh_offset);
+  if (debug) printf("strtab: size=%lu offset=%p\n", strtab->sh_size, (void *)strtab->sh_offset);
   read_metadata(objFileName, strtab_ent, strtab->sh_size, strtab->sh_offset);
 
   unsigned int symtab_size = symtab->sh_size;
@@ -323,7 +323,7 @@ int extendAndFixAfterStrtab(char *objFileName, Elf64_Ehdr *ehdr, Elf64_Shdr **sh
   ehdr->e_shoff += add_space; // We will be displacing section header table
   (*strtab)->sh_size += add_space;
 
-  if (debug) printf("bns:%p  eos:%p\n", begin_next_section, end_of_sections);
+  if (debug) printf("bns:%p  eos:%p\n", (void *)begin_next_section, (void *)end_of_sections);
   
   // Modify Section Header Table and write back
   int idx = 0;
@@ -336,9 +336,9 @@ int extendAndFixAfterStrtab(char *objFileName, Elf64_Ehdr *ehdr, Elf64_Shdr **sh
     if (ptr->sh_offset + ptr->sh_size > end_of_sections) {  // End of section header
       end_of_sections = ptr->sh_offset + ptr->sh_size;
     }
-    if (debug) printf("bns:%p  eos:%p ptr:%p\n", begin_next_section, end_of_sections, ptr);
+    if (debug) printf("bns:%p  eos:%p ptr:%p\n", (void *)begin_next_section, (void *)end_of_sections, ptr);
   }
-  if (debug) printf("bns:%p  eos:%p\n", begin_next_section, end_of_sections);
+  if (debug) printf("bns:%p  eos:%p\n", (void *)begin_next_section, (void *)end_of_sections);
 
   // Displace all sections after strtab by 'add_space'.
   assert(end_of_sections <= ehdr->e_shoff); 
@@ -419,7 +419,7 @@ int addSymbolsAndUpdateSymtab(char *objFileName, int num, int index, char **list
         }
       }
     }
-    if (debug) printf("strtab->sh_size = %d : prev = %d\n", strtab->sh_size, *prev_strtab_size);
+    if (debug) printf("strtab->sh_size = %lu : prev = %lu\n", strtab->sh_size, *prev_strtab_size);
     if (!isSingle && !found) {
       printf("***Could not find: %s\n", list[i]);
       return -1;
