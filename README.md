@@ -2,6 +2,6 @@
 
 ## Please do the following:
   
-$> cd ./example3/  
+$> cd ./example\<HIGHEST VALUE\>/  
 $> make  
 $> make check  
