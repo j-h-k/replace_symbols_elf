@@ -40,7 +40,7 @@ def closecurl(f):
         f.write('}\n')
 
 
-def create_dmtcp_c_file(symbolToFind, returntype, argumenttypes):
+def create_dmtcp_c_file(symbolToFind, returntype, argumenttypes, firstcallargs):
     # Open c file
     fo = open(symbolToFind + '__DMTCP.c', 'w')
 
@@ -48,8 +48,8 @@ def create_dmtcp_c_file(symbolToFind, returntype, argumenttypes):
     header = '#include "DMTCP.h"\n'
     typedef = 'typedef ' + returntype + ' func(' + argumenttypes + ');\n'
     debug = '#define debug 0\n'
-    dmtcp_plt = returntype + ' ' + symbolToFind + \
-        '__dmtcp_plt' + '(' + argumenttypes + ')'
+    dmtcp_plt = 'void *' + ' ' + symbolToFind + \
+        '__dmtcp_plt' + '('+ argumenttypes  +')'
     fo.write(header + typedef + debug + dmtcp_plt)
 
     opencurl(fo)
@@ -64,7 +64,7 @@ def create_dmtcp_c_file(symbolToFind, returntype, argumenttypes):
     opencurl(fo)
     fo.write('\t\tchar *string = malloc(sizeof(char)*1000);\n')
     fo.write('\t\tchar *filename = "./addrs/' +
-             symbolToFind + '__dmtcp_*.addr";\n')
+             symbolToFind + '__dmtcp.addr";\n')
     fo.write('\t\tint fd = open(filename, O_RDONLY);\n')
     fo.write('\t\tchar *token;\n')
     fo.write('\t\tif (fd == -1) { printf("*** *** NO FILE\\n"); exit(1); }\n')
@@ -82,7 +82,16 @@ def create_dmtcp_c_file(symbolToFind, returntype, argumenttypes):
     closecurl(fo)
 
     fo.write(
-        '\tif (counter < numOfWrappers) { ((func *)addrs[counter++])(); }\n')
+        '\tif (counter == 0) { return (void *) (((func *)addrs[counter++])(' + firstcallargs + ')); }\n')
+    fo.write(
+        '\tif (counter < numOfWrappers) ')
+
+    opencurl(fo)
+    fo.write('\t\tint temp = counter++; if (temp+1 == numOfWrappers) { counter = 0; }\n')
+    fo.write('\t\treturn (void *)addrs[temp];\n')
+    closecurl(fo)
+
+    fo.write('\treturn NULL;\n')
     closecurl(fo)
 
     # Close c file
@@ -110,6 +119,7 @@ def write_to_file(filename, listToWrite):
 
 
 def process_file(filename, symbolToFind):
+    actualFunc = ""
     listToWrite = []
     print('Processing file: ', filename)
     print('\tfor symbol: ', symbolToFind)
@@ -122,11 +132,13 @@ def process_file(filename, symbolToFind):
                 print('No Symbol Table!!!')
                 continue
             for nsym, symbol in enumerate(section.iter_symbols()):
+                string = ('%s %s' % (
+                    format_hex(symbol['st_value']),
+                    symbol.name.decode("utf-8")
+                ))
                 if symbolToFind in str(symbol.name):
-                    string = ('%s %s' % (
-                        format_hex(symbol['st_value']),
-                        symbol.name
-                    ))
+                    if symbolToFind == symbol.name.decode("utf-8"):
+                        actualFunc = string
                     listToWrite.append(string)
 
     # Regular expression to match only dmtcp wrappers
@@ -141,6 +153,8 @@ def process_file(filename, symbolToFind):
 
     # Sort list of strings of address and symbol name
     listToWrite.sort()
+    listToWrite += [actualFunc]
+    print (listToWrite)
 
     # Remove the name portion since sorted
     listToWrite = [x.split(' ', 1)[0] for x in listToWrite]
@@ -151,16 +165,19 @@ def process_file(filename, symbolToFind):
     cwd = os.getcwd() + r'/addrs/'
 
     # Open file, filename will be: symbolToFind + '__dmtcp_*.addr'
-    fileToWrite = cwd + symbolToFind + r'__dmtcp_*.addr'
+    fileToWrite = cwd + symbolToFind + r'__dmtcp.addr'
     write_to_file(fileToWrite, listToWrite)
+    print (listToWrite)
+    print ("\tThe addresses directly above has been written out to : " + fileToWrite + "\n\n")
 
 
 if __name__ == '__main__':
     if sys.argv[1] == '-cfile':
         create_dmtcp_h_file()
-        returntype = 'void'
-        argumenttypes = 'void'
-        create_dmtcp_c_file(sys.argv[2], returntype, argumenttypes)
+        returntype = sys.argv[3]
+        argumenttypes = sys.argv[4]
+        firstcallargs = sys.argv[5]
+        create_dmtcp_c_file(sys.argv[2], returntype, argumenttypes, firstcallargs)
 
     elif sys.argv[1] != None and sys.argv[2] != None:
         process_file(sys.argv[1], sys.argv[2])
