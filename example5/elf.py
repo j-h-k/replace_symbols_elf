@@ -24,7 +24,16 @@ def create_dmtcp_h_file():
                '#include <stdlib.h>\n'
                '#include <string.h>\n')
 
-    fo.write(headers)
+    nextfnc = ('#define NEXT_FNC(func)\\\n'
+               '({\\\n'
+               'static __typeof__(&func) _real_ ## func = (__typeof__(&func)) -1;\\\n'
+               'if (_real_ ## func == (__typeof__(&func)) -1) {\\\n'
+               '  _real_ ## func = (__typeof__(&func)) sleep__dmtcp_dlsym();\\\n'
+               '}\\\n'
+               '_real_ ## func;\\\n'
+               '})\n')
+
+    fo.write(headers + nextfnc)
 
     # Close c file
     fo.close()
@@ -89,7 +98,9 @@ def create_dmtcp_c_file(symbolToFind, returntype, argumenttypes, firstcallargs):
         '\tif (counter < numOfWrappers) ')
 
     opencurl(fo)
-    fo.write('\t\tint temp = counter++; if (temp+1 == numOfWrappers) { counter = 0; return &'+symbolToFind +'; }\n')
+    fo.write('\t\tint temp = counter++;\n')
+    fo.write('\t\tif (temp+1 == numOfWrappers) {\n\t\t\tcounter = 0;\n\t\t\treturn &'
+            +symbolToFind +'; \n\t\t}\n')
     fo.write('\t\treturn (void *)addrs[temp];\n')
     closecurl(fo)
 
@@ -102,11 +113,12 @@ def create_dmtcp_c_file(symbolToFind, returntype, argumenttypes, firstcallargs):
     fo.write(dmtcp_plt)
 
     opencurl(fo)
-    fo.write('\tfunc * addr = ' + symbolToFind + '__dmtcp_dlsym();\n')
-    fo.write('\t')
-    if returntype.strip() != 'void ':
-        fo.write('return ');
-    fo.write('addr(' + firstcallargs + ');\n')
+    #fo.write('\tfunc * addr = ' + symbolToFind + '__dmtcp_dlsym();\n')
+    #fo.write('\t')
+    #if returntype.strip() != 'void ':
+    #    fo.write('return ');
+    #fo.write('addr(' + firstcallargs + ');\n')
+    fo.write('\tNEXT_FNC('+symbolToFind+'__dmtcp_plt'+')('+firstcallargs+');\n')
     closecurl(fo) 
     
     # Close c file
