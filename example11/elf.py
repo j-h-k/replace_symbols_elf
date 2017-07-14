@@ -14,14 +14,14 @@ def create_dmtcp_h_file():
     # Open c file
     fo = open('DMTCP.h', 'w')
 
-    headers = ('#include <stdio.h>\n'
-               '#include <fcntl.h>\n'
-               '#include <sys/types.h>\n'
-               '#include <sys/uio.h>\n'
-               '#include <unistd.h>\n'
-               '#include <stdlib.h>\n'
-               '#include <stdlib.h>\n'
-               '#include <string.h>\n'
+    headers = ('//#include <stdio.h>\n'
+               '//#include <fcntl.h>\n'
+               '//#include <sys/types.h>\n'
+               '//#include <sys/uio.h>\n'
+               '//#include <unistd.h>\n'
+               '//#include <stdlib.h>\n'
+               '//#include <stdlib.h>\n'
+               '//#include <string.h>\n'
                '//extern void * dmtcp_dlsym(char *, void *, char *, long int *);\n'
                'extern void * dmtcp_dlsym(char *, void *, int, long int *);\n')
 
@@ -42,7 +42,17 @@ def create_dmtcp_h_file():
 def create_dmtcp_c_file():
     fo = open('dlsym_plt_DMTCP.c', 'w')
     header = '#include "DMTCP.h"\nstatic int plugin_id = 0;\n'
-    fo.write(header)
+    headers = ('#include <stdio.h>\n'
+               '#include <fcntl.h>\n'
+               '#include <sys/types.h>\n'
+               '#include <sys/uio.h>\n'
+               '#include <unistd.h>\n'
+               '#include <stdlib.h>\n'
+               '#include <stdlib.h>\n'
+               '#include <string.h>\n'
+               '//extern void * dmtcp_dlsym(char *, void *, char *, long int *);\n'
+               'extern void * dmtcp_dlsym(char *, void *, int, long int *);\n')
+    fo.write(header + headers)
     fo.close()
 
 def finally_write_dmtcp_dlsym():
@@ -56,7 +66,7 @@ def finally_write_dmtcp_dlsym():
                   '\tstrcat(filename, "./addrs/"); strcat(filename, str); strcat(filename, "__dmtcp.addr");\n')
     fo.write(staticvars)
 
-    fo.write('\tif (addrs[0] == 0) ')
+    fo.write('\tif ((pl_id == 0 && addrs[0] == 0) || (pl_id > 0 && addrs[pl_id-1] == 0))')
 
     opencurl(fo)
     fn = """    int numOfWrappers = 0;
@@ -72,7 +82,13 @@ def finally_write_dmtcp_dlsym():
     free(string);
     //initialized = 1;
   }}
-  return addrs[3];
+  while (1)
+  {{
+    if (addrs[pl_id] != 0)
+      return (void *)addrs[pl_id];
+    ++pl_id;
+  }}
+  //return addrs[3];
   //return (void *) addrs[num];
   /*for (int i = 0; i < numOfWrappers; ++i) {{
     if (caller < (void *) {0}addrs[i])
@@ -113,7 +129,7 @@ def append_dmtcp_plt(symbolToFind, returntype, argumenttypes, firstcallargs):
     # Open c file
     fo = open('dlsym_plt_DMTCP.c', 'a')
     dmtcp_plt = '{0} {2}__dmtcp_plt({1});\n'.format(returntype, argumenttypes, symbolToFind)
-    addrs = 'long int ' + symbolToFind  + 'addrs[100] ={0};\n'
+    addrs = '//long int ' + symbolToFind  + 'addrs[100] ={0};\n'
     typedef = '//typedef {0[0]} func({0[1]});\n'.format(l_args)
     fo.write(addrs + typedef)
 
@@ -130,8 +146,54 @@ def append_dmtcp_plt(symbolToFind, returntype, argumenttypes, firstcallargs):
     # Close c file
     fo.close()
 
+
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+# all_library_wrappers_dmtcp.nz
+
+def find_symbols_dmtcp(object_file):
+    listToWrite = []
+    with open(object_file, 'rb') as f:
+        elffile = ELFFile(f)
+        for section in elffile.iter_sections():
+            if not isinstance(section, SymbolTableSection):
+                continue
+            if section['sh_entsize'] == 0:
+                print('No Symbol Table!!!')
+                continue
+            for nsym, symbol in enumerate(section.iter_symbols()):
+                string = symbol.name.decode("utf-8")
+                if '_wrap__dmtcp_' in str(symbol.name):
+                    listToWrite.append(string[:string.index('_wrap__dmtcp_')])
+
+    print ('listToWrite', listToWrite)
+    return listToWrite
+        
+
+def append_all_library_wrappers_dmtcp(lib_plugin_id, l_object_files):
+    print (l_object_files)
+    with open('all_library_wrappers_dmtcp.nz', 'a+') as f:
+        f.write(lib_plugin_id)
+        for object_file in l_object_files:
+            l_symbols_found = find_symbols_dmtcp(object_file)
+            for sym in l_symbols_found:
+                f.write(' ' + sym)
+        f.write(' \n')
+
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# ./addrs/<symbol>__dmtcp.addr
+
+def sort_all_library_wrappers_dmtcp():
+    l_lines = []
+    with open('all_library_wrappers_dmtcp.nz', 'r') as f:
+        l_lines = f.readlines()
+        l_lines.sort()
+    print (l_lines)
+    with open('all_library_wrappers_dmtcp.nz', 'w') as f:
+        for line in l_lines:
+            f.write(line)
 
 def format_hex(addr, fieldsize=None):
     fieldsize = 16
@@ -166,8 +228,8 @@ def process_file(filename, symbolToFind):
                 continue
             for nsym, symbol in enumerate(section.iter_symbols()):
                 string = ('%s %s' % (
-                    format_hex(symbol['st_value']),
-                    symbol.name.decode("utf-8")
+                    symbol.name.decode("utf-8"),
+                    format_hex(symbol['st_value'])
                 ))
                 if symbolToFind in str(symbol.name):
                     if symbolToFind == symbol.name.decode("utf-8"):
@@ -190,7 +252,16 @@ def process_file(filename, symbolToFind):
     print (listToWrite)
 
     # Remove the name portion since sorted
-    listToWrite = [x.split(' ', 1)[0] for x in listToWrite]
+    listToWrite = [x.split(' ', 1)[1] for x in listToWrite]
+
+    # Put in 0 (NULL) hole library that don't have symbol
+    with open('all_library_wrappers_dmtcp.nz', 'r') as f:
+        l_lines = f.readlines()
+        print ('****************', l_lines)
+        for ind, line in enumerate(l_lines):
+            print (symbolToFind, ind, line, '****************')
+            if symbolToFind not in line:
+                listToWrite.insert(ind, '0')
 
     # mkdir
     if not os.path.exists('./addrs'):
@@ -202,6 +273,11 @@ def process_file(filename, symbolToFind):
     write_to_file(fileToWrite, listToWrite)
     print (listToWrite)
     print ("\tThe addresses directly above has been written out to : " + fileToWrite + "\n\n")
+
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 if __name__ == '__main__':
@@ -235,8 +311,15 @@ if __name__ == '__main__':
 
             finally_write_dmtcp_dlsym()
 
+    elif sys.argv[1] == '-lib':
+        append_all_library_wrappers_dmtcp(sys.argv[2], sys.argv[3:])
+
     elif sys.argv[1] != None and sys.argv[2] != None and len(sys.argv) == 3:
-        process_file(sys.argv[1], sys.argv[2])
+        # sort all_library_wrappers_dmtcp.nz here
+        sort_all_library_wrappers_dmtcp()
+        with open(sys.argv[2], 'r') as f:
+            for l in f:
+                process_file(sys.argv[1], l.split('(')[0].split()[-1])
 
     else:
         print ("***WRONG SYNTAX FOR CALLING elf.py")

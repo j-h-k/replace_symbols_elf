@@ -1,3 +1,2 @@
 unsigned int sleep(unsigned int seconds);
 int open(const char * pathname, int flags);
-

@@ -4,7 +4,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include "DMTCP.h"
-#include "sleep1.h"
+#include "lib1.h"
 
 //static int plugin_id = 1;
 extern void hello();
