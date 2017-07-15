@@ -206,15 +206,15 @@ void printSymbolsToChange(int count, char *list[], char *str, FLAGTYPE ft)
     strcat(buf, " --> ");
     switch (ft) {
     case SINGLESYM:
+      strcat(buf, list[i]);
       if (str) {
-        strcat(buf, list[i]);
         strcat(buf, str);
       }
       else { strcat(buf, "__dmtcp_plt"); }
       break;
     case KEEPNUMSYM:
+      strcat(buf, list[i]);
       if (str) {
-        strcat(buf, list[i]);
         strcat(buf, str);
         strcat(buf, "*");
       }
