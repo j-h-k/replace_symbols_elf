@@ -1,0 +1,182 @@
+*** dlsym_plt_DMTCP.c	2017-08-03 17:01:24.167218835 -0400
+--- BACKUP_dlsym_plt_DMTCP.c	2017-08-03 15:33:31.297904458 -0400
+***************
+*** 32,47 ****
+  int sigaction__dmtcp_plt(int signum, const struct sigaction *  act, struct sigaction *  oldact){
+    return NEXT_FNC_S_DEFAULT(sigaction)(signum,act,oldact);
+  }
+! long int rt_sigactionaddrs[100];
+! //typedef int func(int signum, const struct sigaction *  act, struct sigaction *  oldact);
+! int rt_sigaction__dmtcp_plt(int signum, const struct sigaction *  act, struct sigaction *  oldact){
+!   return NEXT_FNC_S_DEFAULT(rt_sigaction)(signum,act,oldact);
+! }
+! long int sigvecaddrs[100];
+! //typedef int func(int signum, const struct sigvec *  vec, struct sigvec *  ovec);
+! int sigvec__dmtcp_plt(int signum, const struct sigvec *  vec, struct sigvec *  ovec){
+!   return NEXT_FNC_S_DEFAULT(sigvec)(signum,vec,ovec);
+! }
+  long int sigblockaddrs[100];
+  //typedef int func(int mask);
+  int sigblock__dmtcp_plt(int mask){
+--- 32,47 ----
+  int sigaction__dmtcp_plt(int signum, const struct sigaction *  act, struct sigaction *  oldact){
+    return NEXT_FNC_S_DEFAULT(sigaction)(signum,act,oldact);
+  }
+! //KJ long int rt_sigactionaddrs[100];
+! //KJ //typedef int func(int signum, const struct sigaction *  act, struct sigaction *  oldact);
+! //KJ int rt_sigaction__dmtcp_plt(int signum, const struct sigaction *  act, struct sigaction *  oldact){
+! //KJ   return NEXT_FNC_S_DEFAULT(rt_sigaction)(signum,act,oldact);
+! //KJ }
+! //KJ long int sigvecaddrs[100];
+! //KJ //typedef int func(int signum, const struct sigvec *  vec, struct sigvec *  ovec);
+! //KJ int sigvec__dmtcp_plt(int signum, const struct sigvec *  vec, struct sigvec *  ovec){
+! //KJ   return NEXT_FNC_S_DEFAULT(sigvec)(signum,vec,ovec);
+! //KJ }
+  long int sigblockaddrs[100];
+  //typedef int func(int mask);
+  int sigblock__dmtcp_plt(int mask){
+***************
+*** 62,72 ****
+  int sigprocmask__dmtcp_plt(int how, const sigset_t *  set, sigset_t *  oldset){
+    return NEXT_FNC_S_DEFAULT(sigprocmask)(how,set,oldset);
+  }
+! long int rt_sigprocmaskaddrs[100];
+! //typedef int func(int how, const sigset_t *  set, sigset_t *  oldset);
+! int rt_sigprocmask__dmtcp_plt(int how, const sigset_t *  set, sigset_t *  oldset){
+!   return NEXT_FNC_S_DEFAULT(rt_sigprocmask)(how,set,oldset);
+! }
+  long int sigsuspendaddrs[100];
+  //typedef int func(const sigset_t *  mask);
+  int sigsuspend__dmtcp_plt(const sigset_t *  mask){
+--- 62,72 ----
+  int sigprocmask__dmtcp_plt(int how, const sigset_t *  set, sigset_t *  oldset){
+    return NEXT_FNC_S_DEFAULT(sigprocmask)(how,set,oldset);
+  }
+! //KJ long int rt_sigprocmaskaddrs[100];
+! //KJ //typedef int func(int how, const sigset_t *  set, sigset_t *  oldset);
+! //KJ int rt_sigprocmask__dmtcp_plt(int how, const sigset_t *  set, sigset_t *  oldset){
+! //KJ   return NEXT_FNC_S_DEFAULT(rt_sigprocmask)(how,set,oldset);
+! //KJ }
+  long int sigsuspendaddrs[100];
+  //typedef int func(const sigset_t *  mask);
+  int sigsuspend__dmtcp_plt(const sigset_t *  mask){
+***************
+*** 87,97 ****
+  int sigrelse__dmtcp_plt(int sig){
+    return NEXT_FNC_S_DEFAULT(sigrelse)(sig);
+  }
+! long int __sigpauseaddrs[100];
+! //typedef int func(int __sig_or_mask, int __is_sig);
+! int __sigpause__dmtcp_plt(int __sig_or_mask, int __is_sig){
+!   return NEXT_FNC_S_DEFAULT(__sigpause)(__sig_or_mask,__is_sig);
+! }
+  long int sigpauseaddrs[100];
+  //typedef int func(int sig);
+  int sigpause__dmtcp_plt(int sig){
+--- 87,97 ----
+  int sigrelse__dmtcp_plt(int sig){
+    return NEXT_FNC_S_DEFAULT(sigrelse)(sig);
+  }
+! //KJ long int __sigpauseaddrs[100];
+! //KJ //typedef int func(int __sig_or_mask, int __is_sig);
+! //KJ int __sigpause__dmtcp_plt(int __sig_or_mask, int __is_sig){
+! //KJ   return NEXT_FNC_S_DEFAULT(__sigpause)(__sig_or_mask,__is_sig);
+! //KJ }
+  long int sigpauseaddrs[100];
+  //typedef int func(int sig);
+  int sigpause__dmtcp_plt(int sig){
+***************
+*** 157,177 ****
+  int fexecve__dmtcp_plt(int fd, char * const argv[], char * const envp[]){
+    return NEXT_FNC_S_DEFAULT(fexecve)(fd,argv,envp);
+  }
+! long int execladdrs[100];
+! //typedef int func(const char * path, const char * arg, ...);
+! int execl__dmtcp_plt(const char * path, const char * arg, ...){
+!   return NEXT_FNC_S_DEFAULT(execl)(path,arg,...);
+! }
+! long int execlpaddrs[100];
+! //typedef int func(const char * file, const char * arg, ...);
+! int execlp__dmtcp_plt(const char * file, const char * arg, ...){
+!   return NEXT_FNC_S_DEFAULT(execlp)(file,arg,...);
+! }
+! long int execleaddrs[100];
+! //typedef int func(const char * path, const char * arg, ...);
+! int execle__dmtcp_plt(const char * path, const char * arg, ...){
+!   return NEXT_FNC_S_DEFAULT(execle)(path,arg,...);
+! }
+  long int systemaddrs[100];
+  //typedef int func(const char * line);
+  int system__dmtcp_plt(const char * line){
+--- 157,177 ----
+  int fexecve__dmtcp_plt(int fd, char * const argv[], char * const envp[]){
+    return NEXT_FNC_S_DEFAULT(fexecve)(fd,argv,envp);
+  }
+! //KJ long int execladdrs[100];
+! //KJ //typedef int func(const char * path, const char * arg, ...);
+! //KJ int execl__dmtcp_plt(const char * path, const char * arg, ...){
+! //KJ   return NEXT_FNC_S_DEFAULT(execl)(path,arg,...);
+! //KJ }
+! //KJ long int execlpaddrs[100];
+! //KJ //typedef int func(const char * file, const char * arg, ...);
+! //KJ int execlp__dmtcp_plt(const char * file, const char * arg, ...){
+! //KJ   return NEXT_FNC_S_DEFAULT(execlp)(file,arg,...);
+! //KJ }
+! //KJ long int execleaddrs[100];
+! //KJ //typedef int func(const char * path, const char * arg, ...);
+! //KJ int execle__dmtcp_plt(const char * path, const char * arg, ...){
+! //KJ   return NEXT_FNC_S_DEFAULT(execle)(path,arg,...);
+! //KJ }
+  long int systemaddrs[100];
+  //typedef int func(const char * line);
+  int system__dmtcp_plt(const char * line){
+***************
+*** 237,247 ****
+  int waitid__dmtcp_plt(idtype_t idtype, id_t id, siginfo_t * infop, int options){
+    return NEXT_FNC_S_DEFAULT(waitid)(idtype,id,infop,options);
+  }
+! long int syscalladdrs[100];
+! //typedef long func(long sys_num, ...);
+! long syscall__dmtcp_plt(long sys_num, ...){
+!   return NEXT_FNC_S_DEFAULT(syscall)(sys_num,...);
+! }
+  long int popenaddrs[100];
+  //typedef FILE * func(const char * command, const char * mode);
+  FILE * popen__dmtcp_plt(const char * command, const char * mode){
+--- 237,247 ----
+  int waitid__dmtcp_plt(idtype_t idtype, id_t id, siginfo_t * infop, int options){
+    return NEXT_FNC_S_DEFAULT(waitid)(idtype,id,infop,options);
+  }
+! //KJ long int syscalladdrs[100];
+! //KJ //typedef long func(long sys_num, ...);
+! //KJ long syscall__dmtcp_plt(long sys_num, ...){
+! //KJ   return NEXT_FNC_S_DEFAULT(syscall)(sys_num,...);
+! //KJ }
+  long int popenaddrs[100];
+  //typedef FILE * func(const char * command, const char * mode);
+  FILE * popen__dmtcp_plt(const char * command, const char * mode){
+***************
+*** 262,272 ****
+  void closelog__dmtcp_plt(void){
+    NEXT_FNC_S_DEFAULT(closelog)();
+  }
+! long int __cloneaddrs[100];
+! //typedef int func(int (* fn)(void * arg), void * child_stack, int flags, void * arg, int * parent_tidptr, struct user_desc * newtls, int * child_tidptr);
+! int __clone__dmtcp_plt(int (* fn)(void * arg), void * child_stack, int flags, void * arg, int * parent_tidptr, struct user_desc * newtls, int * child_tidptr){
+!   return NEXT_FNC_S_DEFAULT(__clone)(fn,child_stack,flags,arg,parent_tidptr,newtls,child_tidptr);
+! }
+  long int pthread_createaddrs[100];
+  //typedef int func(pthread_t * thread, const pthread_attr_t * attr, void * (* start_routine)(void *), void * arg);
+  int pthread_create__dmtcp_plt(pthread_t * thread, const pthread_attr_t * attr, void * (* start_routine)(void *), void * arg){
+--- 262,272 ----
+  void closelog__dmtcp_plt(void){
+    NEXT_FNC_S_DEFAULT(closelog)();
+  }
+! //KJ long int __cloneaddrs[100];
+! //KJ //typedef int func(int (* fn)(void * arg), void * child_stack, int flags, void * arg, int * parent_tidptr, struct user_desc * newtls, int * child_tidptr);
+! //KJ int __clone__dmtcp_plt(int (* fn)(void * arg), void * child_stack, int flags, void * arg, int * parent_tidptr, struct user_desc * newtls, int * child_tidptr){
+! //KJ   return NEXT_FNC_S_DEFAULT(__clone)(fn,child_stack,flags,arg,parent_tidptr,newtls,child_tidptr);
+! //KJ }
+  long int pthread_createaddrs[100];
+  //typedef int func(pthread_t * thread, const pthread_attr_t * attr, void * (* start_routine)(void *), void * arg);
+  int pthread_create__dmtcp_plt(pthread_t * thread, const pthread_attr_t * attr, void * (* start_routine)(void *), void * arg){
