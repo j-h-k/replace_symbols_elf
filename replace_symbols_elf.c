@@ -69,7 +69,8 @@ int runGetOpt(int argc, char **argv, int *objIndex, char **objList,
       {"singlestr", required_argument, 0, 3},
       {"keepnumstr", required_argument, 0, 4},
       {"completesymbol", required_argument, 0, 7},
-      {"completestr", required_argument, 0, 8}
+      {"completestr", required_argument, 0, 8},
+      {0, 0, 0, 0}
     };
     
     c = getopt_long(argc, argv, "o:s:k:c:", long_options, &option_index);
@@ -160,8 +161,15 @@ int runGetOpt(int argc, char **argv, int *objIndex, char **objList,
       *completeStrPtr = strdup(optarg);
       break;
 
+    case '?':
+      printf("\n*** invalid option given. (look above)\n\n");
+      return -1;
+      break;
+
     default:
       printf("?? getopt returned character code 0%o ??\n", c);
+      return -1;
+      break;
     }
   }
 
@@ -170,7 +178,6 @@ int runGetOpt(int argc, char **argv, int *objIndex, char **objList,
     while (optind < argc)
       printf("%s ", argv[optind++]);
     printf("\n");
-    return -1;
   }
   
   return 0;
