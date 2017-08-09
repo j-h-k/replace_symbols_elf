@@ -66,6 +66,16 @@ def create_dmtcp_c_file():
                '#include <syslog.h>\n'
                '#include <sys/types.h>\n#include <sys/time.h>\n#include <sys/resource.h>\n#include <sys/wait.h>\n'
                '#include <dirent.h>\n'
+               '#define SETUP_FPTR(symbol) void * __fptr = (void *) NEXT_FNC_S_DEFAULT(symbol)\n'
+               '#define DELETE_CALL_FRAME() \\\n'
+               '  asm ("mov %%rbp, %%r11\\n\\t" \\\n' 
+               '        "sub %%rsp, %%r11\\n\\t" \\\n'
+               '        "add %%r11, %%rsp\\n\\t" \\\n'
+               '        "pop %%rbp\\n\\t" \\\n'
+               '        "jmp *%0" \\\n'
+               '        : \\\n'
+               '        : "a" (__fptr) \\\n'
+               '        : )\n'
                '//extern void * dmtcp_sdlsym(char *, void *, char *, long int *);\n'
                '//extern void * dmtcp_sdlsym(char *, void *, int, long int *);\n')
     fo.write(header + headers)
@@ -104,6 +114,7 @@ def finally_write_dmtcp_dlsym():
       return (void *)addrs[pl_id];
     ++pl_id;
   }}
+  exit(1);
   //return addrs[3];
   //return (void *) addrs[num];
   /*for (int i = 0; i < numOfWrappers; ++i) {{
@@ -142,34 +153,27 @@ def append_addrs_h_file(symbolToFind):
     fo.close()
     
 # FOR EACH SYMBOL
-def append_dmtcp_plt(symbolToFind, returntype, argumenttypes, firstcallargs):
-
-    l_args = [returntype, argumenttypes, symbolToFind, firstcallargs]
+def append_dmtcp_plt(symbolToFind):
 
     # Open c file
     fo = open('dlsym_plt_DMTCP.c', 'a')
-    dmtcp_plt = '{0} {2}__dmtcp_plt({1});\n'.format(returntype, argumenttypes, symbolToFind)
+
+    # long int <symbol>addrs[100]
     addrs = 'long int ' + symbolToFind  + 'addrs[100];\n'
-    typedef = '//typedef {0[0]} func({0[1]});\n'.format(l_args)
-    fo.write(addrs + typedef)
+    fo.write(addrs)
 
     # <symbol>__dmtcp_plt
+    dmtcp_plt = 'void {0}__dmtcp_plt();\n'.format(symbolToFind)
     fo.write(dmtcp_plt[:-2])
 
     opencurl(fo)
     fo.write('  ')
-    #if returntype != 'void':
-    #    fo.write('return ')
-    #fo.write('NEXT_FNC_S_DEFAULT('+symbolToFind+')('+firstcallargs+');\n')
-    fo.write('void * __fptr = (void *) NEXT_FNC_S_DEFAULT('+symbolToFind+');\n')
-    fo.write('''asm ("mov %%rbp, %%rax\\n\\t" 
-       "sub %%rsp, %%rax\\n\\t"
-       "add %%rax, %%rsp\\n\\t"
-       "pop %%rbp\\n\\t"
-       "jmp *%0"
-       : 
-       : "r" (__fptr) 
-       : "%rax");\n''')
+    #fo.write('void * __fptr = (void *) NEXT_FNC_S_DEFAULT('+symbolToFind+');\n')
+    fo.write('SETUP_FPTR('+symbolToFind+');\n')
+
+    fo.write('  ')
+    fo.write('DELETE_CALL_FRAME();\n');
+
     closecurl(fo) 
     
     # Close c file
@@ -316,38 +320,38 @@ if __name__ == '__main__':
         # create dmtcp_plt_DMTCP.c
         create_dmtcp_c_file()
 
-        with open(sys.argv[2], 'r') as f, open('SYMBOLS.sym', 'w') as symbols_s:
+        with open(sys.argv[2], 'r') as f:
             for line in f:
                 if line.isspace():
                     continue
                 # args for create dmtcp_dlsym.c
                 symbolToFind = line.split('(', 1)[0].split()[-1].strip()
 
-                returntype = line[:line.find(str(symbolToFind))].strip()
+                #returntype = line[:line.find(str(symbolToFind))].strip()
 
-                argumenttypes = line.split('(', 1)[1].rsplit(')', 1)[0].strip()
+                #argumenttypes = line.split('(', 1)[1].rsplit(')', 1)[0].strip()
 
-                l_firstcallargs = line.split('(', 1)[1].rsplit(')', 1)[0].split(',')
+                #l_firstcallargs = line.split('(', 1)[1].rsplit(')', 1)[0].split(',')
 
-                firstcallargs = ''
-                if symbolToFind == '__clone':
-                    #int (* fn)(void * arg), void * child_stack, int flags, void * arg, int * parent_tidptr, struct user_desc * newtls, int * child_tidptr
-                    firstcallargs = 'fn,child_stack,flags,arg,parent_tidptr,newtls,child_tidptr'
-                elif symbolToFind == 'pthread_create':
-                    #pthread_t * thread, const pthread_attr_t * attr, void * (* start_routine)(void *), void * arg
-                    firstcallargs = 'thread,attr,start_routine,arg'
-                else:
-                    for type_plus_arg in l_firstcallargs:
-                        if type_plus_arg == '' or type_plus_arg == 'void':
-                            break
-                        s = type_plus_arg.strip().split()[-1]
-                        s = s.split('[', 1)
-                        firstcallargs += s[0] + ','
-                    firstcallargs = firstcallargs[:-1]
+                ###firstcallargs = ''
+                ###if symbolToFind == '__clone':
+                ###    #int (* fn)(void * arg), void * child_stack, int flags, void * arg, int * parent_tidptr, struct user_desc * newtls, int * child_tidptr
+                ###    firstcallargs = 'fn,child_stack,flags,arg,parent_tidptr,newtls,child_tidptr'
+                ###elif symbolToFind == 'pthread_create':
+                ###    #pthread_t * thread, const pthread_attr_t * attr, void * (* start_routine)(void *), void * arg
+                ###    firstcallargs = 'thread,attr,start_routine,arg'
+                ###else:
+                ###    for type_plus_arg in l_firstcallargs:
+                ###        if type_plus_arg == '' or type_plus_arg == 'void':
+                ###            break
+                ###        s = type_plus_arg.strip().split()[-1]
+                ###        s = s.split('[', 1)
+                ###        firstcallargs += s[0] + ','
+                ###    firstcallargs = firstcallargs[:-1]
 
-                append_dmtcp_plt(symbolToFind, returntype, argumenttypes, firstcallargs)
+                #append_dmtcp_plt(symbolToFind, returntype, argumenttypes, firstcallargs)
+                append_dmtcp_plt(symbolToFind)
                 append_addrs_h_file(symbolToFind)
-                symbols_s.write(symbolToFind + ' ')
 
             finally_write_dmtcp_dlsym()
             finally_write_h_file()
