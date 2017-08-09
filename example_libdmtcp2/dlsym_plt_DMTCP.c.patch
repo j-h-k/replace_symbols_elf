@@ -1,0 +1,176 @@
+*** dlsym_plt_DMTCP.c	2017-08-08 17:18:10.208131801 -0400
+--- BACKUP_dlsym_plt_DMTCP.c	2017-08-08 17:10:37.346268472 -0400
+***************
+*** 50,79 ****
+  }
+  long int rt_sigactionaddrs[100];
+  //typedef int func(int signum, const struct sigaction *  act, struct sigaction *  oldact);
+! int rt_sigaction__dmtcp_plt(int signum, const struct sigaction *  act, struct sigaction *  oldact){
+!   void * __fptr = (void *) NEXT_FNC_S_DEFAULT(rt_sigaction);
+! asm ("mov %%rbp, %%rax\n\t" 
+!        "sub %%rsp, %%rax\n\t"
+!        "add %%rax, %%rsp\n\t"
+!        "pop %%rbp\n\t"
+!        "jmp *%0"
+!        : 
+!        : "r" (__fptr) 
+!        : "%rax");
+! }
+  long int sigvecaddrs[100];
+  //typedef int func(int signum, const struct sigvec *  vec, struct sigvec *  ovec);
+! int sigvec__dmtcp_plt(int signum, const struct sigvec *  vec, struct sigvec *  ovec){
+!   void * __fptr = (void *) NEXT_FNC_S_DEFAULT(sigvec);
+! asm ("mov %%rbp, %%rax\n\t" 
+!        "sub %%rsp, %%rax\n\t"
+!        "add %%rax, %%rsp\n\t"
+!        "pop %%rbp\n\t"
+!        "jmp *%0"
+!        : 
+!        : "r" (__fptr) 
+!        : "%rax");
+! }
+  long int sigblockaddrs[100];
+  //typedef int func(int mask);
+  int sigblock__dmtcp_plt(int mask){
+--- 50,79 ----
+  }
+  long int rt_sigactionaddrs[100];
+  //typedef int func(int signum, const struct sigaction *  act, struct sigaction *  oldact);
+! //KJ int rt_sigaction__dmtcp_plt(int signum, const struct sigaction *  act, struct sigaction *  oldact){
+! //KJ   void * __fptr = (void *) NEXT_FNC_S_DEFAULT(rt_sigaction);
+! //KJ asm ("mov %%rbp, %%rax\n\t" 
+! //KJ        "sub %%rsp, %%rax\n\t"
+! //KJ        "add %%rax, %%rsp\n\t"
+! //KJ        "pop %%rbp\n\t"
+! //KJ        "jmp *%0"
+! //KJ        : 
+! //KJ        : "r" (__fptr) 
+! //KJ        : "%rax");
+! //KJ }
+  long int sigvecaddrs[100];
+  //typedef int func(int signum, const struct sigvec *  vec, struct sigvec *  ovec);
+! //KJ int sigvec__dmtcp_plt(int signum, const struct sigvec *  vec, struct sigvec *  ovec){
+! //KJ   void * __fptr = (void *) NEXT_FNC_S_DEFAULT(sigvec);
+! //KJ asm ("mov %%rbp, %%rax\n\t" 
+! //KJ        "sub %%rsp, %%rax\n\t"
+! //KJ        "add %%rax, %%rsp\n\t"
+! //KJ        "pop %%rbp\n\t"
+! //KJ        "jmp *%0"
+! //KJ        : 
+! //KJ        : "r" (__fptr) 
+! //KJ        : "%rax");
+! //KJ }
+  long int sigblockaddrs[100];
+  //typedef int func(int mask);
+  int sigblock__dmtcp_plt(int mask){
+***************
+*** 128,144 ****
+  }
+  long int rt_sigprocmaskaddrs[100];
+  //typedef int func(int how, const sigset_t *  set, sigset_t *  oldset);
+! int rt_sigprocmask__dmtcp_plt(int how, const sigset_t *  set, sigset_t *  oldset){
+!   void * __fptr = (void *) NEXT_FNC_S_DEFAULT(rt_sigprocmask);
+! asm ("mov %%rbp, %%rax\n\t" 
+!        "sub %%rsp, %%rax\n\t"
+!        "add %%rax, %%rsp\n\t"
+!        "pop %%rbp\n\t"
+!        "jmp *%0"
+!        : 
+!        : "r" (__fptr) 
+!        : "%rax");
+! }
+  long int sigsuspendaddrs[100];
+  //typedef int func(const sigset_t *  mask);
+  int sigsuspend__dmtcp_plt(const sigset_t *  mask){
+--- 128,144 ----
+  }
+  long int rt_sigprocmaskaddrs[100];
+  //typedef int func(int how, const sigset_t *  set, sigset_t *  oldset);
+! //KJ int rt_sigprocmask__dmtcp_plt(int how, const sigset_t *  set, sigset_t *  oldset){
+! //KJ   void * __fptr = (void *) NEXT_FNC_S_DEFAULT(rt_sigprocmask);
+! //KJ asm ("mov %%rbp, %%rax\n\t" 
+! //KJ        "sub %%rsp, %%rax\n\t"
+! //KJ        "add %%rax, %%rsp\n\t"
+! //KJ        "pop %%rbp\n\t"
+! //KJ        "jmp *%0"
+! //KJ        : 
+! //KJ        : "r" (__fptr) 
+! //KJ        : "%rax");
+! //KJ }
+  long int sigsuspendaddrs[100];
+  //typedef int func(const sigset_t *  mask);
+  int sigsuspend__dmtcp_plt(const sigset_t *  mask){
+***************
+*** 193,209 ****
+  }
+  long int __sigpauseaddrs[100];
+  //typedef int func(int __sig_or_mask, int __is_sig);
+! int __sigpause__dmtcp_plt(int __sig_or_mask, int __is_sig){
+!   void * __fptr = (void *) NEXT_FNC_S_DEFAULT(__sigpause);
+! asm ("mov %%rbp, %%rax\n\t" 
+!        "sub %%rsp, %%rax\n\t"
+!        "add %%rax, %%rsp\n\t"
+!        "pop %%rbp\n\t"
+!        "jmp *%0"
+!        : 
+!        : "r" (__fptr) 
+!        : "%rax");
+! }
+  long int sigpauseaddrs[100];
+  //typedef int func(int sig);
+  int sigpause__dmtcp_plt(int sig){
+--- 193,209 ----
+  }
+  long int __sigpauseaddrs[100];
+  //typedef int func(int __sig_or_mask, int __is_sig);
+! //KJ int __sigpause__dmtcp_plt(int __sig_or_mask, int __is_sig){
+! //KJ   void * __fptr = (void *) NEXT_FNC_S_DEFAULT(__sigpause);
+! //KJ asm ("mov %%rbp, %%rax\n\t" 
+! //KJ        "sub %%rsp, %%rax\n\t"
+! //KJ        "add %%rax, %%rsp\n\t"
+! //KJ        "pop %%rbp\n\t"
+! //KJ        "jmp *%0"
+! //KJ        : 
+! //KJ        : "r" (__fptr) 
+! //KJ        : "%rax");
+! //KJ }
+  long int sigpauseaddrs[100];
+  //typedef int func(int sig);
+  int sigpause__dmtcp_plt(int sig){
+***************
+*** 648,664 ****
+  }
+  long int __cloneaddrs[100];
+  //typedef int func(int (* fn)(void * arg), void * child_stack, int flags, void * arg, int * parent_tidptr, struct user_desc * newtls, int * child_tidptr);
+! int __clone__dmtcp_plt(int (* fn)(void * arg), void * child_stack, int flags, void * arg, int * parent_tidptr, struct user_desc * newtls, int * child_tidptr){
+!   void * __fptr = (void *) NEXT_FNC_S_DEFAULT(__clone);
+! asm ("mov %%rbp, %%rax\n\t" 
+!        "sub %%rsp, %%rax\n\t"
+!        "add %%rax, %%rsp\n\t"
+!        "pop %%rbp\n\t"
+!        "jmp *%0"
+!        : 
+!        : "r" (__fptr) 
+!        : "%rax");
+! }
+  long int pthread_createaddrs[100];
+  //typedef int func(pthread_t * thread, const pthread_attr_t * attr, void * (* start_routine)(void *), void * arg);
+  int pthread_create__dmtcp_plt(pthread_t * thread, const pthread_attr_t * attr, void * (* start_routine)(void *), void * arg){
+--- 648,664 ----
+  }
+  long int __cloneaddrs[100];
+  //typedef int func(int (* fn)(void * arg), void * child_stack, int flags, void * arg, int * parent_tidptr, struct user_desc * newtls, int * child_tidptr);
+! //KJ int __clone__dmtcp_plt(int (* fn)(void * arg), void * child_stack, int flags, void * arg, int * parent_tidptr, struct user_desc * newtls, int * child_tidptr){
+! //KJ   void * __fptr = (void *) NEXT_FNC_S_DEFAULT(__clone);
+! //KJ asm ("mov %%rbp, %%rax\n\t" 
+! //KJ        "sub %%rsp, %%rax\n\t"
+! //KJ        "add %%rax, %%rsp\n\t"
+! //KJ        "pop %%rbp\n\t"
+! //KJ        "jmp *%0"
+! //KJ        : 
+! //KJ        : "r" (__fptr) 
+! //KJ        : "%rax");
+! //KJ }
+  long int pthread_createaddrs[100];
+  //typedef int func(pthread_t * thread, const pthread_attr_t * attr, void * (* start_routine)(void *), void * arg);
+  int pthread_create__dmtcp_plt(pthread_t * thread, const pthread_attr_t * attr, void * (* start_routine)(void *), void * arg){
