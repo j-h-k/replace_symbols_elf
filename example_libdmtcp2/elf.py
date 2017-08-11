@@ -14,17 +14,9 @@ def create_dmtcp_h_file():
     # Open c file
     fo = open('DMTCP.h', 'w')
 
-    headers = ('#ifndef __DMTCP_H_\n'
+    headers1 = ('#ifndef __DMTCP_H_\n'
                '#define __DMTCP_H_\n'
-               '//#include <stdio.h>\n'
-               '//#include <fcntl.h>\n'
-               '//#include <sys/types.h>\n'
-               '//#include <sys/uio.h>\n'
-               '//#include <unistd.h>\n'
-               '//#include <stdlib.h>\n'
-               '//#include <stdlib.h>\n'
-               '//#include <string.h>\n'
-               '//extern void * dmtcp_sdlsym(char *, void *, char *, long int *);\n'
+               '#define STATIC_PLUGIN_ID 0\n'
                '#ifndef EXTERNC\n'
                '# ifdef __cplusplus\n'
                '#  define EXTERNC extern "C"\n'
@@ -34,24 +26,9 @@ def create_dmtcp_h_file():
                '#endif // ifndef EXTERNC\n'
                'EXTERNC void * dmtcp_sdlsym(char *, void *, int, long int *);\n')
 
-    nextfnc = ('#define NEXT_FNC_S_DEFAULT(func)\\\n'
-               '({\\\n'
-               'static __typeof__(&func) _real_ ## func = (__typeof__(&func)) -1;\\\n'
-               'if (_real_ ## func == (__typeof__(&func)) -1) {\\\n'
-               '  _real_ ## func = (__typeof__(&func)) dmtcp_sdlsym( # func, (void *)&func, plugin_id, func ## addrs);\\\n'
-               '}\\\n'
-               '_real_ ## func;\\\n'
-               '})\n')
-
-    fo.write(headers + nextfnc)
-
-    # Close c file
-    fo.close()
-
-def create_dmtcp_c_file():
-    fo = open('dlsym_plt_DMTCP.c', 'w')
-    header = '#define _GNU_SOURCE\n#define _XOPEN_SOURCE 600\n#include "DMTCP.h"\nstatic int plugin_id = 0;\n'
-    headers = ('#include <stdio.h>\n'
+    headers2 = ('#define _GNU_SOURCE\n#define _XOPEN_SOURCE 600\nstatic int plugin_id = 0;\n'
+               '#define _BSD_SOURCE\n'
+               '#include <stdio.h>\n'
                '#include <fcntl.h>\n'
                '#include <sys/types.h>\n'
                '#include <sys/uio.h>\n'
@@ -66,6 +43,17 @@ def create_dmtcp_c_file():
                '#include <syslog.h>\n'
                '#include <sys/types.h>\n#include <sys/time.h>\n#include <sys/resource.h>\n#include <sys/wait.h>\n'
                '#include <dirent.h>\n'
+               '#include <poll.h>\n'
+               '#include <sys/stat.h>\n'
+               '#include <mqueue.h>\n'
+               '#include <sys/types.h>\n'
+               '#include <sys/ipc.h>\n'
+               '#include <sys/msg.h>\n'
+               '#include <sys/sem.h>\n'
+               '#include <sys/shm.h>\n'
+               '#include <sys/socket.h>\n'
+               '#include <sys/ioctl.h>\n'
+               '#include <sys/mman.h>\n'
                '#define SETUP_FPTR(symbol) void * __fptr = (void *) NEXT_FNC_S_DEFAULT(symbol)\n'
                '#define DELETE_CALL_FRAME() \\\n'
                '  asm ("mov %%rbp, %%r11\\n\\t" \\\n' 
@@ -75,10 +63,26 @@ def create_dmtcp_c_file():
                '        "jmp *%0" \\\n'
                '        : \\\n'
                '        : "a" (__fptr) \\\n'
-               '        : )\n'
-               '//extern void * dmtcp_sdlsym(char *, void *, char *, long int *);\n'
-               '//extern void * dmtcp_sdlsym(char *, void *, int, long int *);\n')
-    fo.write(header + headers)
+               '        : )\n')
+
+    nextfnc = ('#define NEXT_FNC_S_DEFAULT(func)\\\n'
+               '({\\\n'
+               'static __typeof__(&func) _real_ ## func = (__typeof__(&func)) -1;\\\n'
+               'if (_real_ ## func == (__typeof__(&func)) -1) {\\\n'
+               '  _real_ ## func = (__typeof__(&func)) dmtcp_sdlsym( # func, (void *)&func, STATIC_PLUGIN_ID, func ## addrs);\\\n'
+               '}\\\n'
+               '_real_ ## func;\\\n'
+               '})\n')
+
+    fo.write(headers1 + headers2 + nextfnc)
+
+    # Close c file
+    fo.close()
+
+def create_dmtcp_c_file():
+    fo = open('dlsym_plt_DMTCP.c', 'w')
+    header = '#include "DMTCP.h"\n'
+    fo.write(header)
     fo.close()
 
 def finally_write_dmtcp_dlsym():
@@ -325,7 +329,8 @@ if __name__ == '__main__':
                 if line.isspace():
                     continue
                 # args for create dmtcp_dlsym.c
-                symbolToFind = line.split('(', 1)[0].split()[-1].strip()
+                #symbolToFind = line.split('(', 1)[0].split()[-1].strip()
+                symbolToFind = line.strip()
 
                 #returntype = line[:line.find(str(symbolToFind))].strip()
 

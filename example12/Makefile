@@ -10,6 +10,7 @@ files:
 	python3 elf.py -cfile symbols.to.find
 	gcc -c -g *_DMTCP.c main.c
 	g++ -c -g *.cpp
+	g++ -c -g mallocwrappers.cpp -o mallocwrappers.tmp.o
 
 rse: 
 	rm -rf ${rse}

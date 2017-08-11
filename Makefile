@@ -11,7 +11,7 @@ dir_wrapfiles=./wrapfiles
 default: ${csn} run
 
 ${csn}: ${csn}.o ${util}.o
-	${CC} ${CFLAGS} $^ -o $@ 
+	${CC} ${CFLAGS} $^ -o $@ -lpthread
 
 # For every XYZ.c file, generate XYZ.o.
 %.o: %.c

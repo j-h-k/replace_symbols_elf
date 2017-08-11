@@ -1,13 +1,17 @@
 rse=replace_symbols_elf
 
-default: pre libdmtcpa generate_cfile applypatch compile
+default: clean pre libs libdmtcpa generate_cfile compile
 
-pre:
+pre: clean
 	make clean -C ../
 	make -C ../
 	cp ../${rse} .
 
-libdmtcpa:
+libs: pre
+	make -C ./libs
+	cp ./libs/*.a .
+
+libdmtcpa: pre
 	make -C ./clean_src
 	# copy LIBTEST.a (which is libdmtcp.a)
 	cp ./clean_src/LIBTEST.a .
@@ -30,8 +34,14 @@ compile:
 	
 link:
 	#LD_LIBRARY_PATH=$$HOME/replace_symbols_elf/example_libdmtcp2/src/lib g++ -g -static -Wl,-u,dmtcp_initialize main.o dlsym_plt_DMTCP.o LIBTEST.a  ./libs/libdmtcpinternal.a  ./libs/libsyscallsreal.a ./libs/libjalib.a ./libs/restore_libc.o -pthread -ldl 
-	g++ -g -static -static-libgcc -Wl,-u,dmtcp_initialize main.o dlsym_plt_DMTCP.o LIBTEST.a  ./libs/libdmtcpinternal.a  ./libs/libsyscallsreal.a ./libs/libjalib.a ./libs/restore_libc.o -ldl $$HOME/replace_symbols_elf/example_libdmtcp2/src/lib/libpthread.a $$HOME/replace_symbols_elf/example_libdmtcp2/src/lib/libc.a
+	g++ -g -static -static-libgcc -Wl,-u,dmtcp_initialize main.o dlsym_plt_DMTCP.o LIBTEST.a  ./libs/libdmtcpinternal.a  ./libs/libsyscallsreal.a ./libs/libjalib.a ./libs/restore_libc.o -ldl -lrt ../src/lib/libpthread.a ../src/lib/libc.a
+
+vi:
+	vi ../${rse}.c
 
 clean:
-	rm -rf *.o dlsym_plt_DMTCP.c DMTCP.h SYMBOLS.sym a.out replace_symbols_elf LIBTEST.a
+	make clean -C ../
+	make clean -C ./clean_src/
+	make clean -C ./libs/
+	rm -rf *.o dlsym_plt_DMTCP.c DMTCP.h SYMBOLS.sym a.out replace_symbols_elf *.a
 	rm -rf *.orig *.rej
