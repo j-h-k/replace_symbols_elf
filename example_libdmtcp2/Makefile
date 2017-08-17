@@ -22,6 +22,7 @@ generate_cfile:
 	python3 elf.py -cfile symbols.to.find
 
 patch:
+	# CREATE A BACKUP_dlsym_plt_DMTCP.c, then run this command
 	diff -c dlsym_plt_DMTCP.c BACKUP_dlsym_plt_DMTCP.c > dlsym_plt_DMTCP.c.patch
 
 applypatch:

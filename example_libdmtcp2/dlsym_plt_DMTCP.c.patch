@@ -1,18 +1,297 @@
-*** dlsym_plt_DMTCP.c	2017-08-09 03:08:54.031603378 -0400
---- BACKUP_dlsym_plt_DMTCP.c	2017-08-09 03:10:24.035963155 -0400
+*** dlsym_plt_DMTCP.c	2017-08-17 16:46:22.048977480 -0400
+--- BACKUP_dlsym_plt_DMTCP.c	2017-08-17 16:13:50.206703619 -0400
 ***************
-*** 42,57 ****
+*** 1,244 ****
+  #include "DMTCP.h"
+! long int callocaddrs[100];
+! void calloc__dmtcp_plt(){
+!   SETUP_FPTR(calloc);
+!   DELETE_CALL_FRAME();
+! }
+! long int mallocaddrs[100];
+! void malloc__dmtcp_plt(){
+!   SETUP_FPTR(malloc);
+!   DELETE_CALL_FRAME();
+! }
+! long int freeaddrs[100];
+! void free__dmtcp_plt(){
+!   SETUP_FPTR(free);
+!   DELETE_CALL_FRAME();
+! }
+! long int reallocaddrs[100];
+! void realloc__dmtcp_plt(){
+!   SETUP_FPTR(realloc);
+!   DELETE_CALL_FRAME();
+! }
+! long int mmapaddrs[100];
+! void mmap__dmtcp_plt(){
+!   SETUP_FPTR(mmap);
+!   DELETE_CALL_FRAME();
+! }
+! long int mmap64addrs[100];
+! void mmap64__dmtcp_plt(){
+!   SETUP_FPTR(mmap64);
+!   DELETE_CALL_FRAME();
+! }
+! long int mremapaddrs[100];
+! void mremap__dmtcp_plt(){
+!   SETUP_FPTR(mremap);
+!   DELETE_CALL_FRAME();
+! }
+! long int munmapaddrs[100];
+! void munmap__dmtcp_plt(){
+!   SETUP_FPTR(munmap);
+!   DELETE_CALL_FRAME();
+! }
+! long int getpidaddrs[100];
+! void getpid__dmtcp_plt(){
+!   SETUP_FPTR(getpid);
+!   DELETE_CALL_FRAME();
+! }
+! long int getppidaddrs[100];
+! void getppid__dmtcp_plt(){
+!   SETUP_FPTR(getppid);
+!   DELETE_CALL_FRAME();
+! }
+! long int killaddrs[100];
+! void kill__dmtcp_plt(){
+!   SETUP_FPTR(kill);
+!   DELETE_CALL_FRAME();
+! }
+! long int tcgetpgrpaddrs[100];
+! void tcgetpgrp__dmtcp_plt(){
+!   SETUP_FPTR(tcgetpgrp);
+!   DELETE_CALL_FRAME();
+! }
+! long int tcsetpgrpaddrs[100];
+! void tcsetpgrp__dmtcp_plt(){
+!   SETUP_FPTR(tcsetpgrp);
+!   DELETE_CALL_FRAME();
+! }
+! long int getpgrpaddrs[100];
+! void getpgrp__dmtcp_plt(){
+!   SETUP_FPTR(getpgrp);
+!   DELETE_CALL_FRAME();
+! }
+! long int setpgrpaddrs[100];
+! void setpgrp__dmtcp_plt(){
+!   SETUP_FPTR(setpgrp);
+!   DELETE_CALL_FRAME();
+! }
+! long int getpgidaddrs[100];
+! void getpgid__dmtcp_plt(){
+!   SETUP_FPTR(getpgid);
+!   DELETE_CALL_FRAME();
+! }
+! long int setpgidaddrs[100];
+! void setpgid__dmtcp_plt(){
+!   SETUP_FPTR(setpgid);
+!   DELETE_CALL_FRAME();
+! }
+! long int getsidaddrs[100];
+! void getsid__dmtcp_plt(){
+!   SETUP_FPTR(getsid);
+!   DELETE_CALL_FRAME();
+! }
+! long int setsidaddrs[100];
+! void setsid__dmtcp_plt(){
+!   SETUP_FPTR(setsid);
+!   DELETE_CALL_FRAME();
+! }
+! long int setgidaddrs[100];
+! void setgid__dmtcp_plt(){
+!   SETUP_FPTR(setgid);
+!   DELETE_CALL_FRAME();
+! }
+! long int setuidaddrs[100];
+! void setuid__dmtcp_plt(){
+!   SETUP_FPTR(setuid);
+!   DELETE_CALL_FRAME();
+! }
+! long int waitaddrs[100];
+! void wait__dmtcp_plt(){
+!   SETUP_FPTR(wait);
+!   DELETE_CALL_FRAME();
+! }
+! long int waitpidaddrs[100];
+! void waitpid__dmtcp_plt(){
+!   SETUP_FPTR(waitpid);
+!   DELETE_CALL_FRAME();
+! }
+! long int waitidaddrs[100];
+! void waitid__dmtcp_plt(){
+!   SETUP_FPTR(waitid);
+!   DELETE_CALL_FRAME();
+! }
+! long int wait3addrs[100];
+! void wait3__dmtcp_plt(){
+!   SETUP_FPTR(wait3);
+!   DELETE_CALL_FRAME();
+! }
+! long int wait4addrs[100];
+! void wait4__dmtcp_plt(){
+!   SETUP_FPTR(wait4);
+!   DELETE_CALL_FRAME();
+! }
+! long int ioctladdrs[100];
+! void ioctl__dmtcp_plt(){
+!   SETUP_FPTR(ioctl);
+!   DELETE_CALL_FRAME();
+! }
+! long int fcntladdrs[100];
+! void fcntl__dmtcp_plt(){
+!   SETUP_FPTR(fcntl);
+!   DELETE_CALL_FRAME();
+! }
+! long int socketaddrs[100];
+! void socket__dmtcp_plt(){
+!   SETUP_FPTR(socket);
+!   DELETE_CALL_FRAME();
+! }
+! long int connectaddrs[100];
+! void connect__dmtcp_plt(){
+!   SETUP_FPTR(connect);
+!   DELETE_CALL_FRAME();
+! }
+! long int bindaddrs[100];
+! void bind__dmtcp_plt(){
+!   SETUP_FPTR(bind);
+!   DELETE_CALL_FRAME();
+! }
+! long int listenaddrs[100];
+! void listen__dmtcp_plt(){
+!   SETUP_FPTR(listen);
+!   DELETE_CALL_FRAME();
+! }
+! long int acceptaddrs[100];
+! void accept__dmtcp_plt(){
+!   SETUP_FPTR(accept);
+!   DELETE_CALL_FRAME();
+! }
+! long int accept4addrs[100];
+! void accept4__dmtcp_plt(){
+!   SETUP_FPTR(accept4);
+!   DELETE_CALL_FRAME();
+! }
+! long int setsockoptaddrs[100];
+! void setsockopt__dmtcp_plt(){
+!   SETUP_FPTR(setsockopt);
+!   DELETE_CALL_FRAME();
+! }
+! long int getsockoptaddrs[100];
+! void getsockopt__dmtcp_plt(){
+!   SETUP_FPTR(getsockopt);
+!   DELETE_CALL_FRAME();
+! }
+! long int socketpairaddrs[100];
+! void socketpair__dmtcp_plt(){
+!   SETUP_FPTR(socketpair);
+!   DELETE_CALL_FRAME();
+! }
+! long int fexecveaddrs[100];
+! void fexecve__dmtcp_plt(){
+!   SETUP_FPTR(fexecve);
+!   DELETE_CALL_FRAME();
+! }
+! long int execveaddrs[100];
+! void execve__dmtcp_plt(){
+!   SETUP_FPTR(execve);
+!   DELETE_CALL_FRAME();
+! }
+! long int execvaddrs[100];
+! void execv__dmtcp_plt(){
+!   SETUP_FPTR(execv);
+!   DELETE_CALL_FRAME();
+! }
+! long int execvpaddrs[100];
+! void execvp__dmtcp_plt(){
+!   SETUP_FPTR(execvp);
+!   DELETE_CALL_FRAME();
+! }
+! long int execvpeaddrs[100];
+! void execvpe__dmtcp_plt(){
+!   SETUP_FPTR(execvpe);
+!   DELETE_CALL_FRAME();
+! }
+! long int execladdrs[100];
+! void execl__dmtcp_plt(){
+!   SETUP_FPTR(execl);
+!   DELETE_CALL_FRAME();
+! }
+! long int execlpaddrs[100];
+! void execlp__dmtcp_plt(){
+!   SETUP_FPTR(execlp);
+!   DELETE_CALL_FRAME();
+! }
+! long int execleaddrs[100];
+! void execle__dmtcp_plt(){
+!   SETUP_FPTR(execle);
+!   DELETE_CALL_FRAME();
+! }
+! long int systemaddrs[100];
+! void system__dmtcp_plt(){
+!   SETUP_FPTR(system);
+!   DELETE_CALL_FRAME();
+! }
+! long int popenaddrs[100];
+! void popen__dmtcp_plt(){
+!   SETUP_FPTR(popen);
+!   DELETE_CALL_FRAME();
+! }
+! long int pcloseaddrs[100];
+! void pclose__dmtcp_plt(){
+!   SETUP_FPTR(pclose);
+!   DELETE_CALL_FRAME();
+! }
+  long int signaladdrs[100];
+  void signal__dmtcp_plt(){
+    SETUP_FPTR(signal);
+--- 1,37 ----
++ #define _GNU_SOURCE
++ #define _XOPEN_SOURCE 600
+  #include "DMTCP.h"
+! static int plugin_id = 0;
+! #include <stdio.h>
+! #include <fcntl.h>
+! #include <sys/types.h>
+! #include <sys/uio.h>
+! #include <unistd.h>
+! #include <stdlib.h>
+! #include <stdlib.h>
+! #include <string.h>
+! #include <malloc.h>
+! #include <signal.h>
+! #include <pthread.h>
+! #include <features.h>
+! #include <syslog.h>
+! #include <sys/types.h>
+! #include <sys/time.h>
+! #include <sys/resource.h>
+! #include <sys/wait.h>
+! #include <dirent.h>
+! #define SETUP_FPTR(symbol) void * __fptr = (void *) NEXT_FNC_S_DEFAULT(symbol)
+! #define DELETE_CALL_FRAME() \
+!   asm ("mov %%rbp, %%r11\n\t" \
+!         "sub %%rsp, %%r11\n\t" \
+!         "add %%r11, %%rsp\n\t" \
+!         "pop %%rbp\n\t" \
+!         "jmp *%0" \
+!         : \
+!         : "a" (__fptr) \
+!         : )
+! //extern void * dmtcp_sdlsym(char *, void *, char *, long int *);
+! //extern void * dmtcp_sdlsym(char *, void *, int, long int *);
+  long int signaladdrs[100];
+  void signal__dmtcp_plt(){
+    SETUP_FPTR(signal);
+***************
+*** 249,259 ****
     SETUP_FPTR(sigaction);
     DELETE_CALL_FRAME();
   }
-! long int rt_sigactionaddrs[100];
-! void rt_sigaction__dmtcp_plt(){
-!   SETUP_FPTR(rt_sigaction);
-!   DELETE_CALL_FRAME();
-! }
-! long int sigvecaddrs[100];
-! void sigvec__dmtcp_plt(){
-!   SETUP_FPTR(sigvec);
+! long int sigsetaddrs[100];
+! void sigset__dmtcp_plt(){
+!   SETUP_FPTR(sigset);
 !   DELETE_CALL_FRAME();
 ! }
   long int sigblockaddrs[100];
@@ -36,63 +315,400 @@
   void sigblock__dmtcp_plt(){
     SETUP_FPTR(sigblock);
 ***************
-*** 72,82 ****
-    SETUP_FPTR(sigprocmask);
-    DELETE_CALL_FRAME();
-  }
-! long int rt_sigprocmaskaddrs[100];
-! void rt_sigprocmask__dmtcp_plt(){
-!   SETUP_FPTR(rt_sigprocmask);
-!   DELETE_CALL_FRAME();
-! }
-  long int sigsuspendaddrs[100];
-  void sigsuspend__dmtcp_plt(){
-    SETUP_FPTR(sigsuspend);
+*** 274,279 ****
 --- 72,82 ----
     SETUP_FPTR(sigprocmask);
     DELETE_CALL_FRAME();
   }
-! //KJ long int rt_sigprocmaskaddrs[100];
-! //KJ void rt_sigprocmask__dmtcp_plt(){
-! //KJ   SETUP_FPTR(rt_sigprocmask);
-! //KJ   DELETE_CALL_FRAME();
-! //KJ }
++ //KJ long int rt_sigprocmaskaddrs[100];
++ //KJ void rt_sigprocmask__dmtcp_plt(){
++ //KJ   SETUP_FPTR(rt_sigprocmask);
++ //KJ   DELETE_CALL_FRAME();
++ //KJ }
   long int sigsuspendaddrs[100];
   void sigsuspend__dmtcp_plt(){
     SETUP_FPTR(sigsuspend);
 ***************
-*** 97,107 ****
-    SETUP_FPTR(sigrelse);
+*** 289,302 ****
+    SETUP_FPTR(sigignore);
     DELETE_CALL_FRAME();
   }
-! long int __sigpauseaddrs[100];
-! void __sigpause__dmtcp_plt(){
-!   SETUP_FPTR(__sigpause);
+  long int sigpauseaddrs[100];
+  void sigpause__dmtcp_plt(){
+    SETUP_FPTR(sigpause);
+    DELETE_CALL_FRAME();
+  }
+! long int sigrelseaddrs[100];
+! void sigrelse__dmtcp_plt(){
+!   SETUP_FPTR(sigrelse);
+    DELETE_CALL_FRAME();
+  }
+  long int sigwaitaddrs[100];
+--- 92,115 ----
+    SETUP_FPTR(sigignore);
+    DELETE_CALL_FRAME();
+  }
++ long int sigrelseaddrs[100];
++ void sigrelse__dmtcp_plt(){
++   SETUP_FPTR(sigrelse);
++   DELETE_CALL_FRAME();
++ }
++ //KJ long int __sigpauseaddrs[100];
++ //KJ void __sigpause__dmtcp_plt(){
++ //KJ   SETUP_FPTR(__sigpause);
++ //KJ   DELETE_CALL_FRAME();
++ //KJ }
+  long int sigpauseaddrs[100];
+  void sigpause__dmtcp_plt(){
+    SETUP_FPTR(sigpause);
+    DELETE_CALL_FRAME();
+  }
+! long int pthread_sigmaskaddrs[100];
+! void pthread_sigmask__dmtcp_plt(){
+!   SETUP_FPTR(pthread_sigmask);
+    DELETE_CALL_FRAME();
+  }
+  long int sigwaitaddrs[100];
+***************
+*** 319,362 ****
+    SETUP_FPTR(fork);
+    DELETE_CALL_FRAME();
+  }
+! long int openaddrs[100];
+! void open__dmtcp_plt(){
+!   SETUP_FPTR(open);
+    DELETE_CALL_FRAME();
+  }
+! long int open64addrs[100];
+! void open64__dmtcp_plt(){
+!   SETUP_FPTR(open64);
+    DELETE_CALL_FRAME();
+  }
+! long int fopenaddrs[100];
+! void fopen__dmtcp_plt(){
+!   SETUP_FPTR(fopen);
+    DELETE_CALL_FRAME();
+  }
+! long int fopen64addrs[100];
+! void fopen64__dmtcp_plt(){
+!   SETUP_FPTR(fopen64);
+    DELETE_CALL_FRAME();
+  }
+! long int openataddrs[100];
+! void openat__dmtcp_plt(){
+!   SETUP_FPTR(openat);
+    DELETE_CALL_FRAME();
+  }
+! long int openat64addrs[100];
+! void openat64__dmtcp_plt(){
+!   SETUP_FPTR(openat64);
+    DELETE_CALL_FRAME();
+  }
+! long int opendiraddrs[100];
+! void opendir__dmtcp_plt(){
+!   SETUP_FPTR(opendir);
+    DELETE_CALL_FRAME();
+  }
+! long int mkstempaddrs[100];
+! void mkstemp__dmtcp_plt(){
+!   SETUP_FPTR(mkstemp);
+    DELETE_CALL_FRAME();
+  }
+  long int closeaddrs[100];
+--- 132,195 ----
+    SETUP_FPTR(fork);
+    DELETE_CALL_FRAME();
+  }
+! long int daemonaddrs[100];
+! void daemon__dmtcp_plt(){
+!   SETUP_FPTR(daemon);
+    DELETE_CALL_FRAME();
+  }
+! long int vforkaddrs[100];
+! void vfork__dmtcp_plt(){
+!   SETUP_FPTR(vfork);
+    DELETE_CALL_FRAME();
+  }
+! long int execveaddrs[100];
+! void execve__dmtcp_plt(){
+!   SETUP_FPTR(execve);
+    DELETE_CALL_FRAME();
+  }
+! long int execvaddrs[100];
+! void execv__dmtcp_plt(){
+!   SETUP_FPTR(execv);
+    DELETE_CALL_FRAME();
+  }
+! long int execvpaddrs[100];
+! void execvp__dmtcp_plt(){
+!   SETUP_FPTR(execvp);
+    DELETE_CALL_FRAME();
+  }
+! long int execvpeaddrs[100];
+! void execvpe__dmtcp_plt(){
+!   SETUP_FPTR(execvpe);
+    DELETE_CALL_FRAME();
+  }
+! long int fexecveaddrs[100];
+! void fexecve__dmtcp_plt(){
+!   SETUP_FPTR(fexecve);
+    DELETE_CALL_FRAME();
+  }
+! long int execladdrs[100];
+! void execl__dmtcp_plt(){
+!   SETUP_FPTR(execl);
 !   DELETE_CALL_FRAME();
 ! }
-  long int sigpauseaddrs[100];
-  void sigpause__dmtcp_plt(){
-    SETUP_FPTR(sigpause);
---- 97,107 ----
-    SETUP_FPTR(sigrelse);
+! long int execlpaddrs[100];
+! void execlp__dmtcp_plt(){
+!   SETUP_FPTR(execlp);
+!   DELETE_CALL_FRAME();
+! }
+! long int execleaddrs[100];
+! void execle__dmtcp_plt(){
+!   SETUP_FPTR(execle);
+!   DELETE_CALL_FRAME();
+! }
+! long int systemaddrs[100];
+! void system__dmtcp_plt(){
+!   SETUP_FPTR(system);
+!   DELETE_CALL_FRAME();
+! }
+! long int exitaddrs[100];
+! void exit__dmtcp_plt(){
+!   SETUP_FPTR(exit);
     DELETE_CALL_FRAME();
   }
-! //KJ long int __sigpauseaddrs[100];
-! //KJ void __sigpause__dmtcp_plt(){
-! //KJ   SETUP_FPTR(__sigpause);
-! //KJ   DELETE_CALL_FRAME();
-! //KJ }
-  long int sigpauseaddrs[100];
-  void sigpause__dmtcp_plt(){
-    SETUP_FPTR(sigpause);
+  long int closeaddrs[100];
 ***************
-*** 272,282 ****
+*** 374,432 ****
+    SETUP_FPTR(closedir);
+    DELETE_CALL_FRAME();
+  }
+- long int dupaddrs[100];
+- void dup__dmtcp_plt(){
+-   SETUP_FPTR(dup);
+-   DELETE_CALL_FRAME();
+- }
+  long int dup2addrs[100];
+  void dup2__dmtcp_plt(){
+    SETUP_FPTR(dup2);
+    DELETE_CALL_FRAME();
+  }
+! long int dup3addrs[100];
+! void dup3__dmtcp_plt(){
+!   SETUP_FPTR(dup3);
+    DELETE_CALL_FRAME();
+  }
+! long int readlinkaddrs[100];
+! void readlink__dmtcp_plt(){
+!   SETUP_FPTR(readlink);
+    DELETE_CALL_FRAME();
+  }
+! long int exitaddrs[100];
+! void exit__dmtcp_plt(){
+!   SETUP_FPTR(exit);
+    DELETE_CALL_FRAME();
+  }
+! long int syscalladdrs[100];
+! void syscall__dmtcp_plt(){
+!   SETUP_FPTR(syscall);
+    DELETE_CALL_FRAME();
+  }
+! long int unsetenvaddrs[100];
+! void unsetenv__dmtcp_plt(){
+!   SETUP_FPTR(unsetenv);
+    DELETE_CALL_FRAME();
+  }
+! long int ptsname_raddrs[100];
+! void ptsname_r__dmtcp_plt(){
+!   SETUP_FPTR(ptsname_r);
+    DELETE_CALL_FRAME();
+  }
+! long int ttyname_raddrs[100];
+! void ttyname_r__dmtcp_plt(){
+!   SETUP_FPTR(ttyname_r);
+    DELETE_CALL_FRAME();
+  }
+! long int getptaddrs[100];
+! void getpt__dmtcp_plt(){
+!   SETUP_FPTR(getpt);
+    DELETE_CALL_FRAME();
+  }
+! long int posix_openptaddrs[100];
+! void posix_openpt__dmtcp_plt(){
+!   SETUP_FPTR(posix_openpt);
+    DELETE_CALL_FRAME();
+  }
+  long int openlogaddrs[100];
+--- 207,265 ----
+    SETUP_FPTR(closedir);
+    DELETE_CALL_FRAME();
+  }
+  long int dup2addrs[100];
+  void dup2__dmtcp_plt(){
+    SETUP_FPTR(dup2);
+    DELETE_CALL_FRAME();
+  }
+! long int pipeaddrs[100];
+! void pipe__dmtcp_plt(){
+!   SETUP_FPTR(pipe);
+    DELETE_CALL_FRAME();
+  }
+! long int pipe2addrs[100];
+! void pipe2__dmtcp_plt(){
+!   SETUP_FPTR(pipe2);
+    DELETE_CALL_FRAME();
+  }
+! long int waitaddrs[100];
+! void wait__dmtcp_plt(){
+!   SETUP_FPTR(wait);
+    DELETE_CALL_FRAME();
+  }
+! long int waitpidaddrs[100];
+! void waitpid__dmtcp_plt(){
+!   SETUP_FPTR(waitpid);
+!   DELETE_CALL_FRAME();
+! }
+! long int wait3addrs[100];
+! void wait3__dmtcp_plt(){
+!   SETUP_FPTR(wait3);
+    DELETE_CALL_FRAME();
+  }
+! long int wait4addrs[100];
+! void wait4__dmtcp_plt(){
+!   SETUP_FPTR(wait4);
+    DELETE_CALL_FRAME();
+  }
+! long int waitidaddrs[100];
+! void waitid__dmtcp_plt(){
+!   SETUP_FPTR(waitid);
+    DELETE_CALL_FRAME();
+  }
+! long int syscalladdrs[100];
+! void syscall__dmtcp_plt(){
+!   SETUP_FPTR(syscall);
+    DELETE_CALL_FRAME();
+  }
+! long int popenaddrs[100];
+! void popen__dmtcp_plt(){
+!   SETUP_FPTR(popen);
+    DELETE_CALL_FRAME();
+  }
+! long int pcloseaddrs[100];
+! void pclose__dmtcp_plt(){
+!   SETUP_FPTR(pclose);
+    DELETE_CALL_FRAME();
+  }
+  long int openlogaddrs[100];
+***************
+*** 439,549 ****
     SETUP_FPTR(closelog);
     DELETE_CALL_FRAME();
   }
-! long int __cloneaddrs[100];
-! void __clone__dmtcp_plt(){
-!   SETUP_FPTR(__clone);
+! long int shmgetaddrs[100];
+! void shmget__dmtcp_plt(){
+!   SETUP_FPTR(shmget);
+!   DELETE_CALL_FRAME();
+! }
+! long int shmataddrs[100];
+! void shmat__dmtcp_plt(){
+!   SETUP_FPTR(shmat);
+!   DELETE_CALL_FRAME();
+! }
+! long int shmdtaddrs[100];
+! void shmdt__dmtcp_plt(){
+!   SETUP_FPTR(shmdt);
+!   DELETE_CALL_FRAME();
+! }
+! long int shmctladdrs[100];
+! void shmctl__dmtcp_plt(){
+!   SETUP_FPTR(shmctl);
+!   DELETE_CALL_FRAME();
+! }
+! long int semgetaddrs[100];
+! void semget__dmtcp_plt(){
+!   SETUP_FPTR(semget);
+!   DELETE_CALL_FRAME();
+! }
+! long int semctladdrs[100];
+! void semctl__dmtcp_plt(){
+!   SETUP_FPTR(semctl);
+!   DELETE_CALL_FRAME();
+! }
+! long int semopaddrs[100];
+! void semop__dmtcp_plt(){
+!   SETUP_FPTR(semop);
+!   DELETE_CALL_FRAME();
+! }
+! long int semtimedopaddrs[100];
+! void semtimedop__dmtcp_plt(){
+!   SETUP_FPTR(semtimedop);
+!   DELETE_CALL_FRAME();
+! }
+! long int msggetaddrs[100];
+! void msgget__dmtcp_plt(){
+!   SETUP_FPTR(msgget);
+!   DELETE_CALL_FRAME();
+! }
+! long int msgctladdrs[100];
+! void msgctl__dmtcp_plt(){
+!   SETUP_FPTR(msgctl);
+!   DELETE_CALL_FRAME();
+! }
+! long int msgsndaddrs[100];
+! void msgsnd__dmtcp_plt(){
+!   SETUP_FPTR(msgsnd);
+!   DELETE_CALL_FRAME();
+! }
+! long int msgrcvaddrs[100];
+! void msgrcv__dmtcp_plt(){
+!   SETUP_FPTR(msgrcv);
+!   DELETE_CALL_FRAME();
+! }
+! long int mq_openaddrs[100];
+! void mq_open__dmtcp_plt(){
+!   SETUP_FPTR(mq_open);
+!   DELETE_CALL_FRAME();
+! }
+! long int mq_closeaddrs[100];
+! void mq_close__dmtcp_plt(){
+!   SETUP_FPTR(mq_close);
+!   DELETE_CALL_FRAME();
+! }
+! long int mq_timedsendaddrs[100];
+! void mq_timedsend__dmtcp_plt(){
+!   SETUP_FPTR(mq_timedsend);
+!   DELETE_CALL_FRAME();
+! }
+! long int mq_timedreceiveaddrs[100];
+! void mq_timedreceive__dmtcp_plt(){
+!   SETUP_FPTR(mq_timedreceive);
+!   DELETE_CALL_FRAME();
+! }
+! long int mq_notifyaddrs[100];
+! void mq_notify__dmtcp_plt(){
+!   SETUP_FPTR(mq_notify);
+!   DELETE_CALL_FRAME();
+! }
+! long int readaddrs[100];
+! void read__dmtcp_plt(){
+!   SETUP_FPTR(read);
+!   DELETE_CALL_FRAME();
+! }
+! long int writeaddrs[100];
+! void write__dmtcp_plt(){
+!   SETUP_FPTR(write);
+!   DELETE_CALL_FRAME();
+! }
+! long int selectaddrs[100];
+! void select__dmtcp_plt(){
+!   SETUP_FPTR(select);
+!   DELETE_CALL_FRAME();
+! }
+! long int polladdrs[100];
+! void poll__dmtcp_plt(){
+!   SETUP_FPTR(poll);
 !   DELETE_CALL_FRAME();
 ! }
   long int pthread_createaddrs[100];
@@ -110,3 +726,125 @@
   long int pthread_createaddrs[100];
   void pthread_create__dmtcp_plt(){
     SETUP_FPTR(pthread_create);
+***************
+*** 554,559 ****
+--- 287,297 ----
+    SETUP_FPTR(pthread_exit);
+    DELETE_CALL_FRAME();
+  }
++ long int pthread_joinaddrs[100];
++ void pthread_join__dmtcp_plt(){
++   SETUP_FPTR(pthread_join);
++   DELETE_CALL_FRAME();
++ }
+  long int pthread_tryjoin_npaddrs[100];
+  void pthread_tryjoin_np__dmtcp_plt(){
+    SETUP_FPTR(pthread_tryjoin_np);
+***************
+*** 564,649 ****
+    SETUP_FPTR(pthread_timedjoin_np);
+    DELETE_CALL_FRAME();
+  }
+- long int pthread_sigmaskaddrs[100];
+- void pthread_sigmask__dmtcp_plt(){
+-   SETUP_FPTR(pthread_sigmask);
+-   DELETE_CALL_FRAME();
+- }
+- long int pthread_getspecificaddrs[100];
+- void pthread_getspecific__dmtcp_plt(){
+-   SETUP_FPTR(pthread_getspecific);
+-   DELETE_CALL_FRAME();
+- }
+- long int pthread_mutex_lockaddrs[100];
+- void pthread_mutex_lock__dmtcp_plt(){
+-   SETUP_FPTR(pthread_mutex_lock);
+-   DELETE_CALL_FRAME();
+- }
+- long int pthread_mutex_trylockaddrs[100];
+- void pthread_mutex_trylock__dmtcp_plt(){
+-   SETUP_FPTR(pthread_mutex_trylock);
+-   DELETE_CALL_FRAME();
+- }
+- long int pthread_mutex_unlockaddrs[100];
+- void pthread_mutex_unlock__dmtcp_plt(){
+-   SETUP_FPTR(pthread_mutex_unlock);
+-   DELETE_CALL_FRAME();
+- }
+- long int pthread_rwlock_unlockaddrs[100];
+- void pthread_rwlock_unlock__dmtcp_plt(){
+-   SETUP_FPTR(pthread_rwlock_unlock);
+-   DELETE_CALL_FRAME();
+- }
+- long int pthread_rwlock_rdlockaddrs[100];
+- void pthread_rwlock_rdlock__dmtcp_plt(){
+-   SETUP_FPTR(pthread_rwlock_rdlock);
+-   DELETE_CALL_FRAME();
+- }
+- long int pthread_rwlock_tryrdlockaddrs[100];
+- void pthread_rwlock_tryrdlock__dmtcp_plt(){
+-   SETUP_FPTR(pthread_rwlock_tryrdlock);
+-   DELETE_CALL_FRAME();
+- }
+- long int pthread_rwlock_wrlockaddrs[100];
+- void pthread_rwlock_wrlock__dmtcp_plt(){
+-   SETUP_FPTR(pthread_rwlock_wrlock);
+-   DELETE_CALL_FRAME();
+- }
+- long int pthread_rwlock_trywrlockaddrs[100];
+- void pthread_rwlock_trywrlock__dmtcp_plt(){
+-   SETUP_FPTR(pthread_rwlock_trywrlock);
+-   DELETE_CALL_FRAME();
+- }
+- long int pthread_cond_broadcastaddrs[100];
+- void pthread_cond_broadcast__dmtcp_plt(){
+-   SETUP_FPTR(pthread_cond_broadcast);
+-   DELETE_CALL_FRAME();
+- }
+- long int pthread_cond_destroyaddrs[100];
+- void pthread_cond_destroy__dmtcp_plt(){
+-   SETUP_FPTR(pthread_cond_destroy);
+-   DELETE_CALL_FRAME();
+- }
+- long int pthread_cond_initaddrs[100];
+- void pthread_cond_init__dmtcp_plt(){
+-   SETUP_FPTR(pthread_cond_init);
+-   DELETE_CALL_FRAME();
+- }
+- long int pthread_cond_signaladdrs[100];
+- void pthread_cond_signal__dmtcp_plt(){
+-   SETUP_FPTR(pthread_cond_signal);
+-   DELETE_CALL_FRAME();
+- }
+- long int pthread_cond_timedwaitaddrs[100];
+- void pthread_cond_timedwait__dmtcp_plt(){
+-   SETUP_FPTR(pthread_cond_timedwait);
+-   DELETE_CALL_FRAME();
+- }
+- long int pthread_cond_waitaddrs[100];
+- void pthread_cond_wait__dmtcp_plt(){
+-   SETUP_FPTR(pthread_cond_wait);
+-   DELETE_CALL_FRAME();
+- }
+  void * dmtcp_sdlsym(char *str, void *fptr, int pl_id, long int* addrs){
+  	char filename[200] = {0};
+  	strcat(filename, "./addrs/"); strcat(filename, str); strcat(filename, "__dmtcp.addr");
+--- 302,307 ----
+***************
+*** 671,678 ****
+    //return addrs[3];
+    //return (void *) addrs[num];
+    /*for (int i = 0; i < numOfWrappers; ++i) {
+!     if (caller < (void *) pthread_cond_waitaddrs[i])
+!       return (void *) pthread_cond_waitaddrs[i];
+    }
+!   return (void *) pthread_cond_waitaddrs[0];*/
+      }
+--- 329,336 ----
+    //return addrs[3];
+    //return (void *) addrs[num];
+    /*for (int i = 0; i < numOfWrappers; ++i) {
+!     if (caller < (void *) pthread_timedjoin_npaddrs[i])
+!       return (void *) pthread_timedjoin_npaddrs[i];
+    }
+!   return (void *) pthread_timedjoin_npaddrs[0];*/
+      }

@@ -31,3 +31,4 @@ link:
 
 clean:
 	rm -rf *.o dlsym_plt_DMTCP.c DMTCP.h SYMBOLS.sym a.out replace_symbols_elf LIBTEST.a
+	make clean -C ./clean_src/
