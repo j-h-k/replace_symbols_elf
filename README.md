@@ -1,4 +1,9 @@
-# replace_symbols_elf
+# replace_symbols_elf 
+
+#### Please do the following for lastest implementation for DMTCP:
+  
+$> cd ./example\_libdmtcp\<HIGHEST VALUE\>/  
+$> make  
 
 ### Takes as command line arguments:
 -o \<objfile\> [more objfiles]  
@@ -36,8 +41,3 @@ no \-\-keepnumstr  | \<symbol\>\_\_dmtcp\_*
 _The \* in the table is [0-9]+_
 ___
 
-## Please do the following for lastest implementation for DMTCP:
-  
-$> cd ./example\<HIGHEST VALUE\>/  
-$> make  
-$> make check  
