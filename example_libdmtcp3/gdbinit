@@ -1,0 +1,11 @@
+b execve
+run
+b _start
+c
+b 'dmtcp::ThreadList::updateTid(Thread*)'
+b _exit
+b dlsym_default_internal_flag_handler(void*, char const*, char const*, char const*, void*, dt_tag*, unsigned int*)
+b pid_initialize_wrappers
+c
+where
+info threads

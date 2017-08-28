@@ -76,6 +76,10 @@ closedir
 dup
 dup2
 dup3
+__xstat
+__xstat64
+__lxstat
+__lxstat64
 readlink
 exit
 syscall
@@ -127,13 +131,5 @@ pthread_cond_init
 pthread_cond_signal
 pthread_cond_timedwait
 pthread_cond_wait
+
 dmtcp_initialize_plugin
-
-__xstat
-__xstat64
-__lxstat
-__lxstat64
-
-dmtcp_gettid
-dmtcp_tkill
-dmtcp_tgkill
