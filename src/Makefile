@@ -1,10 +1,10 @@
-default: glibc-2.26 glibc-build
+default: glibc-build
 
 glibc-2.26:
 	@echo "UNTAR glibc2.26"
 	tar -xvzf glibc-2.26.tar.gz
 
-glibc-build:
+glibc-build: glibc-2.26
 	@echo "CREATE glibc-build"
 	mkdir -p ./glibc-build
 	cd glibc-build; ../glibc-2.26/configure --prefix=$$PWD --enable-static-nss;

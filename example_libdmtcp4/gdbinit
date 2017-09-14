@@ -1,0 +1,10 @@
+b execve
+run
+b _start
+c
+b pthread_create_wrap__dmtcp_1
+b dmtcp::ThreadList::init ()
+b _exit
+c
+where
+info threads
