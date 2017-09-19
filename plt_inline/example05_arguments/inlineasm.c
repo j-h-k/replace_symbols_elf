@@ -19,7 +19,7 @@ int aeu(int count,...)
 }
 
 // Mimic dmtcp_sdlysm
-void * get_aeu()
+void * get_aeu(int dummy)
 {
   return (void *) &aeu;
 }
@@ -27,15 +27,20 @@ void * get_aeu()
 // Mimic <symbol>__dmtcp_plt
 void * plt_aeu()
 {
+  asm("sub $0x70, %%rsp\n\t"
+      : 
+      : 
+      :); 
   /* RDI, RSI, RDX, RCX, R8, R9, XMM0–7 */
-  void * __fptr = get_aeu(); 
-  asm ("mov %%rbp, %%r11\n\t" 
+  get_aeu(1); 
+  asm ("mov %%rax, %%r10\n\t" 
+       "mov %%rbp, %%r11\n\t" 
        "sub %%rsp, %%r11\n\t"
        "add %%r11, %%rsp\n\t"
        "pop %%rbp\n\t"
-       "jmp *%0"
+       "jmp *%%r10"
        : 
-       : "a" (__fptr)
+       :
        : );
   return NULL;
 }

@@ -1,11 +1,20 @@
+FILE=inlineasm
+CFLAGS=-g -O0
+
 default:
-	gcc -g inlineasm.c
+	gcc ${CFLAGS} -o ${FILE} ${FILE}.c
 
 run: default
-	./a.out
+	./${FILE}
 
 check:
-	./a.out
+	./${FILE}
+
+vi:
+	vim ${FILE}.c
+
+gdb:
+	gdb ./${FILE}
 
 clean:
-	rm -f a.out
+	rm -f ${FILE} a.out
