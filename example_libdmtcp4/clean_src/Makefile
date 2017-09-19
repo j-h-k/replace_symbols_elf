@@ -57,7 +57,7 @@ default:
 	../replace_symbols_elf \
 	-o alarm.o ckptserializer.o coordinatorapi.o dmtcp_dlsym.o dmtcpplugin.o dmtcpworker.o glibcsystem.o miscwrappers.o plugininfo.o pluginmanager.o siginfo.o signalwrappers.o syslogwrappers.o terminal.o threadlist.o threadsync.o threadwrappers.o writeckpt.o execwrappers.o popen.o syscallsreal.o trampolines.o dmtcpmessagetypes.o workerstate.o dmtcp_dlsym.o uniquepid.o shareddata.o util_exec.o util_misc.o util_init.o jalibinterface.o processinfo.o procselfmaps.o jalib.o jassert.o jbuffer.o jfilesystem.o jserialize.o jsocket.o jtimer.o jalloc.o \
         -f _real_ \
-        --startwithstr=_s1
+        --startwithstr=_s1 # both def and undef
 
 	../replace_symbols_elf \
 	-o alarm.o ckptserializer.o coordinatorapi.o dmtcp_dlsym.o dmtcpplugin.o dmtcpworker.o glibcsystem.o miscwrappers.o plugininfo.o pluginmanager.o siginfo.o signalwrappers.o syslogwrappers.o terminal.o threadlist.o threadsync.o threadwrappers.o writeckpt.o execwrappers.o popen.o syscallsreal.o trampolines.o dmtcpmessagetypes.o workerstate.o dmtcp_dlsym.o uniquepid.o shareddata.o util_exec.o util_misc.o util_init.o jalibinterface.o processinfo.o procselfmaps.o jalib.o jassert.o jbuffer.o jfilesystem.o jserialize.o jsocket.o jtimer.o jalloc.o \
