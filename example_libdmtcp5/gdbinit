@@ -1,12 +1,8 @@
 b execve
 run
 b _start
+b dmtcp::ThreadList::init ()
 c
-b dmtcp::ThreadList::init ()
-b threadlist.cpp:186
-b pthread_create_wrap__dmtcp_1
-b dmtcp::ThreadList::init ()
-b allocate_stack
 b _exit
 c
 where

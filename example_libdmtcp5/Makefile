@@ -56,7 +56,7 @@ link: libdmtcpa
 	#python3 elf.py -lib 1 ${OBJFILES_LIBDMTCP_PID}
 	python3 elf.py -lib 1 ${OBJFILES_LIBDMTCP}
 	#g++ ${CFLAGS} -static -static-libgcc -Wl,-u,dmtcp_initialize main.o dlsym_plt_DMTCP.o LIBDMTCP.a  LIBDMTCP_PID.a ./libs/restore_libc.o -ldl -lrt ../src/glibc-build/nptl/libpthread.a ../src/glibc-build/libc.a
-	g++ ${CFLAGS} -static -static-libgcc -Wl,-u,dmtcp_initialize -I./${KFRT} ./${KFRT}/main.o ./${KFRT}/dlsym_plt_DMTCP.o -Wl,--whole-archive LIBDMTCP.a -Wl,--no-whole-archive ./libs/restore_libc.o -ldl -lrt ../src/glibc-build/nptl/libpthread.a ../src/glibc-build/libc.a
+	g++ ${CFLAGS} -static -static-libgcc -Wl,-u,dmtcp_initialize -I./${KFRT} save_rest_regs.s ./${KFRT}/main.o ./${KFRT}/dlsym_plt_DMTCP.o -Wl,--whole-archive LIBDMTCP.a -Wl,--no-whole-archive ./libs/restore_libc.o -ldl -lrt ../src/glibc-build/nptl/libpthread.a ../src/glibc-build/libc.a
 	python3 elf.py a.out *.sym 
 
 
