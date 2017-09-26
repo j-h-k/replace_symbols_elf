@@ -70,6 +70,7 @@ def create_dmtcp_h_file_base():
             '         :\\\n'
             '         :\\\n'
             '         : ); })\n'
+            'EXTERNC int __clone(int (*fn)(void *arg), void *child_stack, int flags, void *arg, int *ptid, struct user_desc *tls, int *ctid);\n'
             'EXTERNC void * dmtcp_sdlsym(char *, void *, int, long int *);\n'
             'EXTERNC void dmtcp_initialize_plugin(void) __attribute((weak));\n'
             'EXTERNC pid_t dmtcp_gettid() __attribute((weak));\n'

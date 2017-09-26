@@ -3,7 +3,8 @@
 #include <unistd.h>
 int main()
 {
-  printf("THIS IS TO TEST THE RUN!!!\n");
+  printf("main started~!~!~!\n");
+  fflush(stdout);
   close(2);
   return 0;
 }

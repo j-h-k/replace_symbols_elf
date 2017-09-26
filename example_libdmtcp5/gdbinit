@@ -1,9 +1,8 @@
 b execve
 run
 b _start
-b dmtcp::ThreadList::init ()
 c
-b _exit
+b main
 c
 where
 info threads

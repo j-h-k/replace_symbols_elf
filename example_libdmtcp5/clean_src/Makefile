@@ -9,6 +9,42 @@ default:
 
 	rm -f *.o LIBDMTCP.a LIBDMTCP_PID.a
 
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	## MODIFIED LIBC AND LIBPTHREAD
+	cp ../../src/glibc-build/libc.a ../../src/glibc-build/nptl/libpthread.a  .
+
+
+	## libc
+	ar x libc.a
+
+	../replace_symbols_elf \
+	-o spawni.o \
+	-c __clone \
+	--completestr=__clone__dmtcp_plt
+
+	ar r libc.a spawni.o
+
+	rm *.o
+
+	## libpthread
+	ar x libpthread.a
+
+	../replace_symbols_elf \
+	-o pthread_create.o \
+	-c __clone \
+	--completestr=__clone__dmtcp_plt
+
+	ar r libpthread.a pthread_create.o
+
+	rm *.o
+
+
+	## move it up a directory	
+	mv libc.a libpthread.a ../
+
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 	cp ${LIBDMTCP_OBJS} ./${COF}/
 
 	cp ./${COF}/*.o .
@@ -47,10 +83,11 @@ default:
 	-c _real_sigpause \
 	--completestr=__xpg_sigpause --only_undef
 
-	../replace_symbols_elf \
-	-o threadlist.o \
-	-c _real_clone \
-	--completestr=clone --only_undef
+	#../replace_symbols_elf \
+	#-o threadlist.o threadwrappers.o \
+	#-c _real_clone \
+	#--completestr=__clone --only_undef
+
 
 	### nm ./signalwrappers.o | grep sigpause
 
