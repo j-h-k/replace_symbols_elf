@@ -1,8 +1,6 @@
-b execve
-run
+start
+b exeve
 b _start
 c
-b main
+b dmtcp_initialize()
 c
-where
-info threads

@@ -43,7 +43,7 @@ movetodmtcp: compile
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # ROUND TWO	
 configuredmtcpforstatic:
-	(cd ~/dmtcp && ./configure 'CFLAGS=-g3 -O0 -DSTATIC_DMTCP=1' 'CXXFLAGS=-g3 -O0 -DSTATIC_DMTCP=1')
+	(cd ~/dmtcp && ./configure --enable-logging 'CFLAGS=-g3 -O0 -DSTATIC_DMTCP=1' 'CXXFLAGS=-g3 -O0 -DSTATIC_DMTCP=1')
 	make -j -C ~/dmtcp
 
 libdmtcpa: configuredmtcpforstatic
@@ -66,6 +66,15 @@ writeaddrs:
 check:
 	~/dmtcp/bin/dmtcp_launch ./a.out
 
+run:
+	~/dmtcp/bin/dmtcp_launch --no-gzip -p 7779 ./a.out
+
+restart:
+	~/dmtcp/bin/dmtcp_restart  -p 7779 ckpt*.dmtcp
+
+tidy:
+	rm -f ckpt*.dmtcp ckpt*.temp
+
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # FOR DEVELOPMENT
@@ -74,6 +83,8 @@ vi:
 
 gdb:
 	gdb --args ~/dmtcp/bin/dmtcp_launch ./a.out
+gdb2:
+	gdb --args ~/dmtcp/bin/dmtcp_launch -p 7779 ./a.out
 
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -99,3 +110,4 @@ clean:
 	rm -rf *.sym
 	rm -f ./${KFRT}/*
 	rm -f ~/dmtcp/include/DMTCP.h
+	rm -f ckpt*
