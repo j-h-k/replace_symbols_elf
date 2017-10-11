@@ -3,4 +3,3 @@ b exeve
 b _start
 c
 b dmtcp_initialize()
-c

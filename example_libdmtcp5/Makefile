@@ -38,12 +38,15 @@ compile: generate_cfile
 	cp DMTCP.h dlsym_plt_DMTCP.o main.o *.sym ./${KFRT}/
 
 movetodmtcp: compile
-	cp DMTCP*.h ~/dmtcp/include/
+	cp DMTCP.h static_dmtcp.h
+	cp static_dmtcp.h ~/dmtcp/include/
+	cp DMTCP.h ~/dmtcp/include/
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # ROUND TWO	
 configuredmtcpforstatic:
 	(cd ~/dmtcp && ./configure --enable-logging 'CFLAGS=-g3 -O0 -DSTATIC_DMTCP=1' 'CXXFLAGS=-g3 -O0 -DSTATIC_DMTCP=1')
+	#(cd ~/dmtcp && ./configure 'CFLAGS=-g3 -O0 -DSTATIC_DMTCP=1' 'CXXFLAGS=-g3 -O0 -DSTATIC_DMTCP=1')
 	make -j -C ~/dmtcp
 
 libdmtcpa: configuredmtcpforstatic
@@ -104,10 +107,11 @@ clean:
 	make clean -C ./clean_src/
 	make clean -C ./libs/
 	make clean -C ./utilities/
-	rm -rf *.o dlsym_plt_DMTCP.c DMTCP*.h SYMBOLS.sym a.out replace_symbols_elf *.a
+	rm -rf *.o dlsym_plt_DMTCP.c static_dmtcp.h DMTCP*.h SYMBOLS.sym a.out replace_symbols_elf *.a
 	rm -rf *.orig *.rej
 	rm -rf *.nz ./addrs
 	rm -rf *.sym
 	rm -f ./${KFRT}/*
 	rm -f ~/dmtcp/include/DMTCP.h
 	rm -f ckpt*
+	rm -f clean_src/*.sym
